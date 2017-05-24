@@ -1,8 +1,10 @@
+仿写老虎大大的项目（https://github.com/TIGERB/easy-php）
+
 ###  Project Directory Structure
 
 ```
 app                             [application backend directory]
-├── gab                        [module directory]
+├── demo                        [module directory]
 │   ├── controllers             [controller directory]
 │   ├── Index.php               [default controller class file]
 │   ├── logics                  [logic directory]
@@ -10,11 +12,11 @@ app                             [application backend directory]
 │   └── models                  [model directory]
 │       └── Index.php           [model class file]
 ├── config                      [config directory]
-│    └── gab                   [module config directory]
+│    └── demo                   [module config directory]
 │        ├── common.php         [common config file]
 │        └── database.php       [database config file]
 doc                             [api document directory]
-framework                       [gab-php framework directory]
+framework                       [demo-php framework directory]
 ├── config                      [config directory]
 │      ├── common.php           [default common config file]
 │      └── database.php         [default database config file]
@@ -44,12 +46,13 @@ public                          [this is a resource directory to expose service 
 │    └── dist                   [frontend build destination]
 ├── index.php                   [entrance php script file]
 tests                           [unit test directory]
-├── gab                        [module name]
+├── demo                        [module name]
 │      └── IndexTest.php        [test class file]
 ├── TestCase.php                [phpunit test case class file]
 vendor                          [composer vendor directory]
 .git-hooks                      [git hooks directory]
 └── pre-commit                  [git pre-commit example file]
+└── commit-msg                  [git commit-msg example file]
 .env                            [the environment variables file]
 .gitignore                      [git ignore config file]
 

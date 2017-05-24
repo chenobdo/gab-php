@@ -23,7 +23,7 @@ require(ROOT_PATH . '/framework/App.php');
 require(ROOT_PATH . '/framework/Load.php');
 
 try {
-    new Load();
+    Load::register();
 
     $app = new App();
 
