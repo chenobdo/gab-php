@@ -7,17 +7,34 @@
  * @author: Gabriel <https://github.com/obdobriel>
  */
 
-namespace framework\handles
+namespace Framework\Handles;
 
-use framework\handles\Handle;
+use Framework\Handles\Handle;
+use Exception;
 
+/**
+ * 注册加载handle
+ */
 class ExceptionHandle implements Handle
 {
 	public function __construct()
 	{}
 
-	public function register($app)
-	{
-		var_dump('error_exception');
-	}
+	public function register()
+    {
+        set_exception_handler([$this, 'exceptionHandler']);
+    }
+
+    public function exceptionHandler($exception)
+    {
+        $exceptionInfo = [
+            'number'  => $exception->getCode(),
+            'message' => $exception->getMessage(),
+            'file'    => $exception->getFile(),
+            'line'    => $exception->getLine(),
+            'trace'   => $exception->getTrace(),
+        ];
+
+        throw new Exception(json_encode($exceptionInfo), 500);
+    }
 }

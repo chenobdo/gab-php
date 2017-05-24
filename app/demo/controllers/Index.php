@@ -7,7 +7,7 @@
  * @author: Gabriel <https://github.com/obdobriel>
  */
 
-namespace app\gab\controllers;
+namespace App\Demo\Controllers;
 
 /**
  *
@@ -23,4 +23,9 @@ class Index
 	 */
 	public function index()
 	{}
+
+	public function Hello()
+	{
+		echo 'Hello Gab PHP';
+	}
 }
