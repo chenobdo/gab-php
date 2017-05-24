@@ -1,0 +1,14 @@
+{
+    "name": "obdobriel/gab-php",
+    "description": "a light php framework for study",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Gabriel",
+            "email": "obdo.briel@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*"
+    }
+}
