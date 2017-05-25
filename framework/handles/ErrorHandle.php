@@ -47,7 +47,7 @@ class ErrorHandle implements Handle
             'line'    => $error['line'],
         ];
 
-        CoreHttpException::reponse($errorInfo);
+        CoreHttpException::reponseErr($errorInfo);
     }
 
     public function errorHandler(
@@ -66,6 +66,6 @@ class ErrorHandle implements Handle
             'context' => $errorContext,
         ];
 
-        CoreHttpException::reponse($errorInfo);
+        CoreHttpException::reponseErr($errorInfo);
     }
 }

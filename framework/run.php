@@ -22,14 +22,15 @@ use Framework\Response;
 define('ROOT_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . '/..');
 
 // 引入自加载类文件
-require(ROOT_PATH . '/framework/Load.php');
+require ROOT_PATH . '/framework/Load.php';
+require ROOT_PATH . '/framework/App.php';
 
 try {
     // 注册自加载
     Load::register();
 
     // 初始化应用
-    $app = new App();
+    $app = new \Framework\App();
 
     // 加载错误处理机制
     $app->load(

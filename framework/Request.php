@@ -99,7 +99,7 @@ class Request
      */
     public function get($value = '')
     {
-        return isset($this->_getParams[$value])) ? $this->_getParams[$value] : '';
+        return isset($this->_getParams[$value]) ? $this->_getParams[$value] : '';
     }
 
     /**
@@ -109,7 +109,7 @@ class Request
      */
     public function post($value = '')
     {
-        return isset($this->_postParams[$value])) ? $this->_postParams[$value] : '';
+        return isset($this->_postParams[$value]) ? $this->_postParams[$value] : '';
     }
 
     /**
@@ -119,7 +119,7 @@ class Request
      */
     public function request($value = '')
     {
-        return isset($this->_requestParams[$value])) ? $this->_requestParams[$value] : '';
+        return isset($this->_requestParams[$value]) ? $this->_requestParams[$value] : '';
     }
 
     /**
@@ -129,6 +129,6 @@ class Request
      */
     public function getServer($value = '')
     {
-        return isset($this->_serverParams[$value])) ? $this->_serverParams[$value] : '';
+        return isset($this->_serverParams[$value]) ? $this->_serverParams[$value] : '';
     }
 }

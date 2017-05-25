@@ -53,17 +53,17 @@ class CoreHttpException extends Exception
         $this->message = $extra . ' ' . $this->_httpCode[$code];
     }
 
-    public function reponse($exception)
+    public static function reponse($exception)
     {
         header('Content-Type:Application/json; Charset=utf-8');
         die(json_encode([
             '__coreError' => [
-                'code'    => $this->getCode(),
-                'message' => $this->getMessage(),
+                'code'    => $exception->getCode(),
+                'message' => $exception->getMessage(),
                 'infomations'  => [
-                    'file'  => $this->getFile(),
-                    'line'  => $this->getLine(),
-                    'trace' => $this->getTrace(),
+                    'file'  => $exception->getFile(),
+                    'line'  => $exception->getLine(),
+                    'trace' => $exception->getTrace(),
                 ]
             ]
         ]));
