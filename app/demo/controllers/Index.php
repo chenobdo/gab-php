@@ -9,17 +9,26 @@
  *                                 *
  ***********************************/
 
-namespace Framework\Handles;
+namespace App\Demo\Controllers;
 
-use Framework\App;
-
-Interface Handle
+/**
+ *
+ */
+class Index
 {
-    /**
-       * 应用启动注册
-     *
-       * @param  [type] $app [description]
-       * @return [type]      [description]
-       */
-    public function register(App $app);
+    public function __construct()
+    {
+    }
+
+    public function Hello()
+    {
+        echo 'Hello Gab PHP';
+    }
+
+    public function get()
+    {
+        return App::$app->container
+                        ->getSingle('request')
+                        ->get('username');
+    }
 }

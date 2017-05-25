@@ -1,2 +1,64 @@
-# gab-php
-a light php framework for study
+仿写老虎大大的项目（https://github.com/TIGERB/easy-php）
+
+<h1 align="center">Gab PHP</h1>
+
+<p align="center"> A lightweight PHP framework for studying<p>
+
+###  Project Directory Structure
+
+```
+app                             [application backend directory]
+├── demo                        [module directory]
+│   ├── controllers             [controller directory]
+│   ├── Index.php               [default controller class file]
+│   ├── logics                  [logic directory]
+│   │   └── HttpException.php   [logic class file]
+│   └── models                  [model directory]
+│       └── Index.php           [model class file]
+├── config                      [config directory]
+│    └── demo                   [module config directory]
+│        ├── common.php         [common config file]
+│        └── database.php       [database config file]
+doc                             [api document directory]
+framework                       [demo-php framework directory]
+├── config                      [config directory]
+│      ├── common.php           [default common config file]
+│      └── database.php         [default database config file]
+├── exceptions                  [core exception class]
+├── handles                     [handle class file be used by app run]
+│      ├── Handle.php           [handle interface]
+│      ├── ErrorHandle.php      [error handle class]
+│      ├── ExceptionHandle.php  [exception handle class]
+│      └── RouterHandle.php     [router handle class]
+├── orm                         [datebase object relation map class directory]
+│      ├── Interpreter.php      [sql Interpreter class]
+│      ├── DB.php               [database operation class]
+│      └── db                   [db type directory]
+│          └── Mysql.php        [mysql class file]
+├── nosql                       [nosql directory]
+│    └── Redis.php              [redis class file]
+├── App.php                     [this application class file]
+├── Load.php                    [autoload class file]
+├── Request.php                 [request object class file]
+├── Response.php                [response object class file]
+├── run.php                     [run this application script file]
+public                          [this is a resource directory to expose service resource]
+├── frontend                    [application frontend directory]
+│    └── src                    [frontend resource directory]
+│    │   ├── components         [frontend component directory]
+│    │   ├── views              [frontend view directory]
+│    │   ├── images             [frontend image directory]
+│    └── dist                   [frontend build destination]
+├── index.php                   [entrance php script file]
+tests                           [unit test directory]
+├── demo                        [module name]
+│      └── IndexTest.php        [test class file]
+├── TestCase.php                [phpunit test case class file]
+vendor                          [composer vendor directory]
+.git-hooks                      [git hooks directory]
+└── pre-commit                  [git pre-commit example file]
+└── commit-msg                  [git commit-msg example file]
+.env                            [the environment variables file]
+.gitignore                      [git ignore config file]
+
+```
