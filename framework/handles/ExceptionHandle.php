@@ -1,19 +1,22 @@
 <?php
-/**
- * gab-php
- *
- * a light php framework for study
- *
- * @author: Gabriel <https://github.com/obdobriel>
- */
+/***********************************
+ *             Gab PHP             *
+ *                                 *
+ * A light php framework for study *
+ *                                 *
+ *             Gabriel             *
+ *  <https://github.com/obdobriel> *
+ *                                 *
+ ***********************************/
 
 namespace Framework\Handles;
 
+use Framework\App;
 use Framework\Handles\Handle;
-use Exception;
+use Framework\Exceptions\CoreHttpException;
 
 /**
- * 注册加载handle
+ * 未捕获异常注册加载handle
  */
 class ExceptionHandle implements Handle
 {
@@ -21,7 +24,7 @@ class ExceptionHandle implements Handle
     {
     }
 
-    public function register()
+    public function register(App $app)
     {
         set_exception_handler([$this, 'exceptionHandler']);
     }
@@ -36,6 +39,6 @@ class ExceptionHandle implements Handle
             'trace'   => $exception->getTrace(),
         ];
 
-        throw new Exception(json_encode($exceptionInfo), 500);
+        throw new Exception(json_encode($errorInfo), 500);
     }
 }

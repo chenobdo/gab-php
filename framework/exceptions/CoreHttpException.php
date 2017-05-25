@@ -45,13 +45,7 @@ class CoreHttpException extends Exception
      */
     public function __construct($code = 200, $extra = '')
     {
-        if (empty($code)) {
-            throw new Exception($this->_httpCode[400], 400);
-        }
         $this->code = $code;
-        if (!isset($this->_httpCode[$code])) {
-            throw new Exception($this->_httpCode[404], 404);
-        }
         if (empty($extra)) {
             $this->message = $this->_httpCode[$code];
             return;
@@ -59,39 +53,34 @@ class CoreHttpException extends Exception
         $this->message = $extra . ' ' . $this->_httpCode[$code];
     }
 
-    public static function reponse($exception)
+    public function reponse($exception)
     {
         header('Content-Type:Application/json; Charset=utf-8');
-        if ($exception instanceof Exception) {
-            die(
-                json_encode(
-                    [
-                    'coreError' => [
-                    'code'    => $excption->getCode(),
-                    'message' => $excption->getMessage(),
-                    'infomations'  => [
-                        'file'  => $excption->getFile(),
-                        'line'  => $excption->getLine(),
-                        'trace' => $excption->getTrace(),
-                    ]
-                    ]
-                    ]
-                )
-            );
-        }
-        die(
-            json_encode(
-                [
-                'coreError' => [
-                'code'    => 500,
-                'message' => $exception,
+        die(json_encode([
+            '__coreError' => [
+                'code'    => $this->getCode(),
+                'message' => $this->getMessage(),
                 'infomations'  => [
-                    'file'  => $exception['file'],
-                    'line'  => $exception['line'],
+                    'file'  => $this->getFile(),
+                    'line'  => $this->getLine(),
+                    'trace' => $this->getTrace(),
                 ]
+            ]
+        ]));
+    }
+
+    public static function reponseErr($e)
+    {
+        header('Content-Type:Application/json; Charset=utf-8');
+        die(json_encode([
+            '__coreError' => [
+                'code'    => 500,
+                'message' => $e,
+                'infomations'  => [
+                    'file'  => $e['file'],
+                    'line'  => $e['line'],
                 ]
-                ]
-            )
-        );
+            ]
+        ]));
     }
 }

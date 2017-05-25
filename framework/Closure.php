@@ -9,17 +9,10 @@
  *                                 *
  ***********************************/
 
-namespace Framework\Handles;
 
-use Framework\App;
+namespace Framework;
 
-Interface Handle
+class Container
 {
-    /**
-       * 应用启动注册
-     *
-       * @param  [type] $app [description]
-       * @return [type]      [description]
-       */
-    public function register(App $app);
+
 }

@@ -9,6 +9,8 @@
  *                                 *
  ***********************************/
 
+use Framework\Exceptions\CoreHttpException;
+
 /**
  * 注册加载handle
  */
@@ -21,7 +23,7 @@ class Load
      *
      * @return mixed
      */
-    public function register()
+    public static function register()
     {
         spl_autoload_register(['Load', 'autoload']);
     }
@@ -45,7 +47,7 @@ class Load
         $class       = implode('\\', $classInfo);
         $classPath   = ROOT_PATH.'/'.str_replace('\\', '/', $class).'.php';
         if (!file_exists($classPath)) {
-            throw new Exception("$classPath Not Found", 404);
+            throw new CoreHttpException(404, "$classPath Not Found");
         }
         self::$map[$classOrigin] = $classPath;
         include $classPath;

@@ -11,22 +11,57 @@
 
 namespace Framework\Handles;
 
+use Framework\App;
 use Framework\Handles\Handle;
 use Framework\Exceptions\CoreHttpException;
 use ReflectionClass;
-use Load;
 
 /**
  * 注册加载handle
  */
 class RouterHandle implements Handle
 {
+    /**
+     * 框架实例
+     * @var object
+     */
+    private $_app;
+
     public function __construct()
     {
     }
 
-    public function register()
+    /**
+     * 魔法函数__get
+     * @param  string $name 属性名称
+     * @return mixed
+     */
+    public function __get($name = '')
     {
+        $name = '_'.$name;
+        return $this->$name;
+    }
+
+    /**
+     * 魔法函数__set
+     * @param  string $name  属性名称
+     * @param  string $value 属性值
+     * @return mixed
+     */
+    public function __set($name = '', $value = '')
+    {
+        $name = '_'.$name;
+        $this->$name = $value;
+    }
+
+    /**
+     * 注册路由处理机制
+     * @param  App    $app 框架实例
+     * @return void
+     */
+    public function register(App $app)
+    {
+        $this->_app = $app;
         $this->route();
     }
 
@@ -76,6 +111,6 @@ class RouterHandle implements Handle
             throw new CoreHttpException(404, 'Action:' . $actionName);
         }
         $controller = new $controllerPath();
-        $controller->$actionName();
+        $this->app->responseData  = $controller->$actionName();
     }
 }

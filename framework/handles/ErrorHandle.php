@@ -8,6 +8,7 @@
  */
 namespace Framework\Handles;
 
+use Framework\App;
 use Framework\Handles\Handle;
 use Framework\Exceptions\CoreHttpException;
 
@@ -22,7 +23,7 @@ class ErrorHandle implements Handle
      *
      * @return mixed
      */
-    public function register()
+    public function register(App $app)
     {
         register_shutdown_function([$this, 'shutdown']);
         set_error_handler([$this, 'errorHandler']);
@@ -56,7 +57,7 @@ class ErrorHandle implements Handle
         $errorLine,
         $errorContext
     ) {
-    
+
         $errorInfo = [
             'type'    => $errorNumber,
             'message' => $errorMessage,

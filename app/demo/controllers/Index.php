@@ -1,11 +1,13 @@
 <?php
-/**
- * gab-php
- *
- * a light php framework for study
- *
- * @author: Gabriel <https://github.com/obdobriel>
- */
+/***********************************
+ *             Gab PHP             *
+ *                                 *
+ * A light php framework for study *
+ *                                 *
+ *             Gabriel             *
+ *  <https://github.com/obdobriel> *
+ *                                 *
+ ***********************************/
 
 namespace App\Demo\Controllers;
 
@@ -18,17 +20,13 @@ class Index
     {
     }
 
-    /**
-     * [index description]
-     *
-     * @return [type] [description]
-     */
-    public function index()
-    {
-    }
-
     public function Hello()
     {
         echo 'Hello Gab PHP';
+    }
+
+    public function get()
+    {
+        return App::$app->request->get('username');
     }
 }
