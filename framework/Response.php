@@ -80,7 +80,6 @@ class Response
      */
     public function __get($name = '')
     {
-        $name = '_'.$name;
         return $this->$name;
     }
 
@@ -92,7 +91,6 @@ class Response
      */
     public function __set($name = '', $value = '')
     {
-        $name = '_'.$name;
         $this->$name = $value;
     }
 }

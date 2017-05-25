@@ -27,6 +27,8 @@ class Index
 
     public function get()
     {
-        return App::$app->request->get('username');
+        return App::$app->container
+                        ->getSingle('request')
+                        ->get('username');
     }
 }

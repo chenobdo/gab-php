@@ -29,25 +29,25 @@ class App
     　* 框架加载流程一系列处理类集合
     　* @var array
     　*/
-    private $_handlesList = [];
+    private $handlesList = [];
 
     /**
      * 服务容器
      * @var object
      */
-    private $_container;
+    private $container;
 
     /**
      * 请求对象
      * @var object
      */
-    private $_request;
+    private $request;
 
     /**
      * 响应对象
      * @var object
      */
-    private $_responseData;
+    private $responseData;
 
     /**
      * 构造
@@ -55,7 +55,7 @@ class App
     public function __construct()
     {
         self::$app = $this;
-        $this->_container = new Container();
+        $this->container = new Container();
     }
 
     /**
@@ -65,7 +65,6 @@ class App
      */
     public function __get($name = '')
     {
-        $name = '_'.$name;
         return $this->$name;
     }
 
@@ -77,25 +76,24 @@ class App
      */
     public function __set($name = '', $value = '')
     {
-        $name = '_'.$name;
         $this->$name = $value;
     }
 
     public function load(Closure $handle)
     {
-        $this->_handlesList[] = $handle;
+        $this->handlesList[] = $handle;
     }
 
     public function run(Closure $request)
     {
-        $this->_request = $request();
-        foreach ($this->_handlesList as $handle) {
+        $this->container->setSingle('request', $request);
+        foreach ($this->handlesList as $handle) {
             $handle()->register($this);
         }
     }
 
     public function response(Closure $closure)
     {
-        $closure()->restSuccess($this->_responseData);
+        $closure()->restSuccess($this->responseData);
     }
 }

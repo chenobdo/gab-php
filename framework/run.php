@@ -7,6 +7,7 @@
  * @author: Gabriel <https://github.com/obdobriel>
  */
 
+use Framework\App;
 use Framework\Handles\ErrorHandle;
 use Framework\Handles\ExceptionHandle;
 use Framework\Handles\RouterHandle;
@@ -30,7 +31,7 @@ try {
     Load::register();
 
     // 初始化应用
-    $app = new \Framework\App();
+    $app = new App();
 
     // 加载错误处理机制
     $app->load(
@@ -39,12 +40,11 @@ try {
         }
     );
 
-    // 加载异常处理机制
-    $app->load(
-        function () {
-            return new ExceptionHandle();
-        }
-    );
+    //  加载异常处理机制　由于本文件全局catch了异常　所以不存在未捕获异常
+    //　可省略注册未捕获异常Handle
+    // $app->load(function() {
+    //     return new ExceptionHandle();
+    // });
 
      // 加载路由机制
     $app->load(
