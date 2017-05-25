@@ -1,18 +1,20 @@
 <?php
-/**
- * gab-php
- *
- * a light php framework for study
- *
- * @author: Gabriel <https://github.com/obdobriel>
- */
+/***********************************
+ *             Gab PHP             *
+ *                                 *
+ * A light php framework for study *
+ *                                 *
+ *             Gabriel             *
+ *  <https://github.com/obdobriel> *
+ *                                 *
+ ***********************************/
 
 /**
  * 注册加载handle
  */
 class Load
 {
-	public static $map = [];
+    public static $map = [];
 
     /**
      * 应用启动注册.
@@ -25,16 +27,14 @@ class Load
     }
 
     /**
-     * [autoload description]
-     * @param  [type] $class [description]
-     * @return [type]        [description]
+     * 自加载函数
+     *
+     * @param  string $class 类名
+     * @return void
      */
     private static function autoload($class)
     {
         $classOrigin = $class;
-        if (empty($class)) {
-            throw new Exception("autoload empty Not Found", 404);
-        }
         $classInfo = explode('\\', $class);
         $className = array_pop($classInfo);
         foreach ($classInfo as &$v) {
@@ -48,6 +48,6 @@ class Load
             throw new Exception("$classPath Not Found", 404);
         }
         self::$map[$classOrigin] = $classPath;
-        require $classPath;
+        include $classPath;
     }
 }

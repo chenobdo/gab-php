@@ -11,10 +11,11 @@ namespace Framework\Handles;
 
 Interface Handle
 {
-  	/**
-  	 * 应用启动注册
-  	 * @param  [type] $app [description]
-  	 * @return [type]      [description]
-  	 */
+    /**
+       * 应用启动注册
+     *
+       * @param  [type] $app [description]
+       * @return [type]      [description]
+       */
     public function register();
 }

@@ -9,21 +9,31 @@
 namespace Framework\Handles;
 
 use Framework\Handles\Handle;
-use Exception;
+use Framework\Exceptions\CoreHttpException;
 
 class ErrorHandle implements Handle
 {
-	public function __construct()
+    public function __construct()
     {
     }
 
-	public function register()
-	{
-		register_shutdown_function([$this, 'shutdown']);
+    /**
+     * 注册错误处理机制
+     *
+     * @return mixed
+     */
+    public function register()
+    {
+        register_shutdown_function([$this, 'shutdown']);
         set_error_handler([$this, 'errorHandler']);
-	}
+    }
 
-	public function shutdown()
+    /**
+     * 脚本结束
+     *
+     * @return mixed
+     */
+    public function shutdown()
     {
         $error = error_get_last();
         if (empty($error)) {
@@ -36,7 +46,7 @@ class ErrorHandle implements Handle
             'line'    => $error['line'],
         ];
 
-        // throw new Exception(json_encode($errorInfo), 500);
+        CoreHttpException::reponse($errorInfo);
     }
 
     public function errorHandler(
@@ -44,8 +54,9 @@ class ErrorHandle implements Handle
         $errorMessage,
         $errorFile,
         $errorLine,
-        $errorContext)
-    {
+        $errorContext
+    ) {
+    
         $errorInfo = [
             'type'    => $errorNumber,
             'message' => $errorMessage,
@@ -54,6 +65,6 @@ class ErrorHandle implements Handle
             'context' => $errorContext,
         ];
 
-        // throw new Exception(json_encode($errorInfo), 500);
+        CoreHttpException::reponse($errorInfo);
     }
 }

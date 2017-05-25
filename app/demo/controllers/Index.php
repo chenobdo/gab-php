@@ -14,18 +14,21 @@ namespace App\Demo\Controllers;
  */
 class Index
 {
-	public function __construct()
-	{}
+    public function __construct()
+    {
+    }
 
-	/**
-	 * [index description]
-	 * @return [type] [description]
-	 */
-	public function index()
-	{}
+    /**
+     * [index description]
+     *
+     * @return [type] [description]
+     */
+    public function index()
+    {
+    }
 
-	public function Hello()
-	{
-		echo 'Hello Gab PHP';
-	}
+    public function Hello()
+    {
+        echo 'Hello Gab PHP';
+    }
 }

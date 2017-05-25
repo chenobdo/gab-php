@@ -17,10 +17,11 @@ use Exception;
  */
 class ExceptionHandle implements Handle
 {
-	public function __construct()
-	{}
+    public function __construct()
+    {
+    }
 
-	public function register()
+    public function register()
     {
         set_exception_handler([$this, 'exceptionHandler']);
     }

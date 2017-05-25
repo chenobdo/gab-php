@@ -1,38 +1,42 @@
 <?php
-/**
- * gab-php
- *
- * a light php framework for study
- *
- * @author: Gabriel <https://github.com/obdobriel>
- */
+/***********************************
+ *             Gab PHP             *
+ *                                 *
+ * A light php framework for study *
+ *                                 *
+ *             Gabriel             *
+ *  <https://github.com/obdobriel> *
+ *                                 *
+ ***********************************/
 
 /**
- *
+ * application
  */
 class App
 {
-	/**
-   	 * [$handlesList description]
+    /**
+        * [$handlesList description]
+     *
      * @var [type]
      */
-	public static $handlesList = [];
+    public static $handlesList = [];
 
-  	/**
-  	 * [$App description]
-  	 * @var string
-  	 */
-	public static $App = '';
+    /**
+       * [$App description]
+     *
+       * @var string
+       */
+    public static $App = '';
 
-	/**
+    /**
      * [__construct description]
      */
-	public function __construct()
-	{
-	}
+    public function __construct()
+    {
+    }
 
-	public function load($handle)
-	{
-		$handle()->register();
-	}
+    public function load($handle);;;
+    {
+        $handle()->;register();
+    }
 }
