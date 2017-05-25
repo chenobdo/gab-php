@@ -10,7 +10,7 @@
 use Framework\Handles\ErrorHandle;
 use Framework\Handles\ExceptionHandle;
 use Framework\Handles\RouterHandle;
-use Framework\Exceptions\CoreHttpException
+use Framework\Exceptions\CoreHttpException;
 
 /**
  * 定义全局常量

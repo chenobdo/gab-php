@@ -59,10 +59,10 @@ class CoreHttpException extends Exception
         $this->message = $extra . ' ' . $this->_httpCode[$code];
     }
 
-    public static function reponse($excption)
+    public static function reponse($exception)
     {
         header('Content-Type:Application/json; Charset=utf-8');
-        if ($exception instanceof Excption) {
+        if ($exception instanceof Exception) {
             die(
                 json_encode(
                     [

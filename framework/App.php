@@ -35,8 +35,8 @@ class App
     {
     }
 
-    public function load($handle);;;
+    public function load($handle)
     {
-        $handle()->;register();
+        $handle()->register();
     }
 }
