@@ -30,21 +30,6 @@ class RouterHandle implements Handle
 	public function route()
 	{
 		preg_match_all('/^\/(.*)\?/', $_SERVER['REQUEST_URI'], $uri);
-
-		echo "<pre>";
-		echo "=================================";
-		echo "<br >";
-		echo "Filename: RouterHandle.php";
-		echo "<br >";
-		echo "Filepath: /C/Users/Gabriel/Documents/htdocs/gab-php/framework/handles/RouterHandle.php";
-		echo "<br >";
-		echo "=================================";
-		var_dump($_SERVER['REQUEST_URI']);
-		var_dump($uri);
-		echo "<br >";
-		exit("--------");
-
-
 		$uri = $uri[1][0];
 		if (empty($uri)) {
 			throw new Exception('NOT FOUND', 404);
