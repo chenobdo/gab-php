@@ -61,12 +61,19 @@ class Request
 	/**
 	 * 构造
 	 */
-	function __construct()
+	function __construct(App $app)
 	{
 		$this->serverParams = $_SERVER;
-		$this->requestParams = $_REQUEST;
-		$this->getParams = $_GET;
-		$this->postParams = $_POST;
+        if ($app->isCli === 'true') {
+            // cli 模式
+            $this->requestParams = $_REQUEST['argv'];
+            $this->getParams     = $_REQUEST['argv'];
+            $this->postParams    = $_REQUEST['argv'];
+        } else {
+    		$this->requestParams = $_REQUEST;
+    		$this->getParams = $_GET;
+    		$this->postParams = $_POST;
+        }
 	}
 
 	/**

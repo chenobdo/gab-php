@@ -37,7 +37,7 @@ class App
      */
     private $responseData;
 
-     /**
+    /**
      * 框架实例根目录
      *
      * @var string
@@ -45,6 +45,11 @@ class App
     private $rootPath;
 
     /**
+     * cli模式
+     *
+     * @var string
+     */
+    private $isCli　= 'false';
 
     /**
     * 框架实例
@@ -68,7 +73,9 @@ class App
      */
     public function __construct($rootPath, Closure $loader)
     {
-         // 根目录
+        // cli模式
+        $this->isCli    = getenv('IS_CLI');
+        // 根目录
         $this->rootPath = $rootPath;
 
         // 注册自加载

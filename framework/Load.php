@@ -44,7 +44,7 @@ class Load
             'Framework' => $app->rootPath
         ];
         // 注册框架加载函数　不使用composer加载机制加载框架　自己实现
-        spl_autoload_register(['Load', 'autoload']);
+        spl_autoload_register(['Framework\Load', 'autoload']);
         // 引入composer自加载文件
         require($app->rootPath . '/vendor/autoload.php');
     }

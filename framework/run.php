@@ -68,8 +68,8 @@ try {
     });
 
     // 启动应用
-    $app->run(function() {
-        return new Request();
+    $app->run(function() use ($app){
+        return new Request($app);
     });
 
     // 应用生命周期结束　响应结果

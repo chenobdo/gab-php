@@ -62,6 +62,12 @@ class RouterHandle implements Handle
      */
     private $requestUri = '';
 
+    /* get请求路由规则map
+     *
+     * @var array
+     */
+    public static $getMap = [];
+
     /**
      * 构造函数.
      */
@@ -117,7 +123,7 @@ class RouterHandle implements Handle
 
         /* 路由策略　*/
         $this->routeStrategy = 'pathinfo';
-        if (strpos($this->requestUri, 'index.php')) {
+        if （(strpos($this->requestUri, 'index.php') || $app->isCli === 'true') {
             $this->routeStrategy = 'general';
         }
 
@@ -220,11 +226,13 @@ class RouterHandle implements Handle
     }
 
     /**
-     * 路由配置文件　路由规则
+     * 手动路由
      *
+     * @param  string $uri 路由uri
+     * @return void
      */
-    public function config()
+    public function get($uri = '')
     {
-        # code...
+        // code...
     }
 }
