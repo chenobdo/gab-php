@@ -148,6 +148,16 @@ class Request
     }
 
     /**
+     * 获取所有参数
+     *
+     * @return array
+     */
+    public function all()
+    {
+        return $this->requestParams;
+    }
+
+    /**
      * 获取SERVER参数
      * @param  string $value 参数名
      * @return mixed

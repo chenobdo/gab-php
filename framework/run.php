@@ -21,7 +21,7 @@ use Framework\Response;
  */
 
 // 根目录
-define('ROOT_PATH', dirname($_SERVER['SCRIPT_FILENAME']) . '/..');
+define('ROOT_PATH', __DIR__ . '/..');
 
 // 引入自加载类文件
 require ROOT_PATH . '/framework/Load.php';
