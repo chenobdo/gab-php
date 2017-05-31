@@ -66,9 +66,9 @@ class ConfigHandle implements Handle
 
     public function loadConfig()
     {
-    	$config = require(ROOT_PATH . 'framework/config/common.php');
+    	$config = require(ROOT_PATH . '/framework/config/common.php');
 
-    	$database = require(ROOT_PATH . 'framework/config/database.php');
+    	$database = require(ROOT_PATH . '/framework/config/database.php');
 
     	$this->config = array_merge($config, $database);
     }

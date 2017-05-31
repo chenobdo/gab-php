@@ -103,7 +103,7 @@ class RouterHandle implements Handle
     public function register(App $app)
     {
         // request uri
-        $this->requestUrl = $app::$container->getSingle('request')->server('REQUEST_URI');
+        $this->requestUri = $app::$container->getSingle('request')->server('REQUEST_URI');
         // App
         $this->app = $app;
         // 获取配置
@@ -133,7 +133,8 @@ class RouterHandle implements Handle
 
         // 获取控制器类
         $controllerName = ucfirst($this->controllerName);
-        $controllerPath = "App\\{$this->moduleName}\\Controllers\\{$controllerName}";
+        $moduleName = ucfirst($this->moduleName);
+        $controllerPath = "App\\{$moduleName}\\Controllers\\{$controllerName}";
         // 反射解析当前控制器类　判断是否有当前操作方法
         $reflaction     = new ReflectionClass($controllerPath);
         if(!$reflaction->hasMethod($this->actionName)) {
