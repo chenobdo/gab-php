@@ -41,7 +41,7 @@ class Load
     public static function register(App $app)
     {
         self::$namespaceMap = [
-            'Framework' => $app->rootPath;
+            'Framework' => $app->rootPath
         ];
         // 注册框架加载函数　不使用composer加载机制加载框架　自己实现
         spl_autoload_register(['Load', 'autoload']);
