@@ -25,6 +25,13 @@ class ConfigHandle implements Handle
     private $app;
 
     /**
+     * 配置
+     *
+     * @var array
+     */
+    private $config;
+
+    /**
      * 构造函数
      */
     public function __construct()
@@ -57,6 +64,11 @@ class ConfigHandle implements Handle
         $this->$name = $value;
     }
 
+    /**
+     * 注册配置文件处理机制
+     * @param  App    $app 框架实例
+     * @return void
+     */
     public function register(App $app)
     {
 		$this->app = $app;

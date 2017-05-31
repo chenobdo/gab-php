@@ -24,9 +24,10 @@ class Container
 
     /**
      * class intance 映射
+     *
      * @var array
      */
-    private $instanceMap = [];
+    public $instanceMap = [];
 
     /**
      * 注入一个类

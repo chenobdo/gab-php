@@ -14,6 +14,7 @@ namespace Framework\Handles;
 use Framework\App;
 use Framework\Exceptions\CoreHttpException;
 use ReflectionClass;
+use Closure;
 
 /**
  * 注册加载handle
@@ -26,6 +27,13 @@ class RouterHandle implements Handle
      * @var App
      */
     private $app;
+
+    /**
+     * 配置实例
+     *
+     * @var
+     */
+    private $config;
 
     /**
      * 默认模块.
@@ -62,11 +70,29 @@ class RouterHandle implements Handle
      */
     private $requestUri = '';
 
-    /* get请求路由规则map
-     *
+    /**
+     * 自定义路由规则 get请求
      * @var array
      */
-    public static $getMap = [];
+    private $getMap = [];
+
+    /**
+     * 自定义路由规则 post请求
+     * @var array
+     */
+    private $postMap = [];
+
+    /**
+     * 自定义路由规则 put请求
+     * @var array
+     */
+    private $putMap = [];
+
+    /**
+     * 自定义路由规则 delete请求
+     * @var array
+     */
+    private $deleteMap = [];
 
     /**
      * 构造函数.
@@ -101,6 +127,54 @@ class RouterHandle implements Handle
         $this->$name = $value;
     }
 
+     /**
+     * 自定义get请求路由
+     *
+     * @param  string $uri      请求uri
+     * @param  mixed  $function 匿名函数或者控制器方法标示
+     * @return void
+     */
+    public function get($uri = '', $function = '')
+    {
+        $this->getMap[$uri] = $function;
+    }
+
+    /**
+     * 自定义post请求路由
+     *
+     * @param  string $uri      请求uri
+     * @param  mixed  $function 匿名函数或者控制器方法标示
+     * @return void
+     */
+    public function post($uri = '', $function = '')
+    {
+        $this->postMap[$uri] = $function;
+    }
+
+    /**
+     * 自定义put请求路由
+     *
+     * @param  string $uri      请求uri
+     * @param  mixed  $function 匿名函数或者控制器方法标示
+     * @return void
+     */
+    public function put($uri = '', $function = '')
+    {
+        $this->putMap[$uri] = $function;
+    }
+
+    /**
+     * 自定义delete请求路由
+     *
+     * @param  string $uri      请求uri
+     * @param  mixed  $function 匿名函数或者控制器方法标示
+     * @return void
+     */
+    public function delete($uri = '', $function = '')
+    {
+        $this->getMap[$uri] = $function;
+    }
+
     /**
      * 注册路由处理机制
      * @param  App    $app 框架实例
@@ -131,16 +205,31 @@ class RouterHandle implements Handle
         $this->route();
     }
 
+    /**
+     * 路由机智
+     * @return void
+     */
     public function route()
     {
         // 路由策略
         $strategy = $this->routeStrategy;
         $this->$strategy();
 
+        // 自定义路由判断
+        if ($this->userDefined()) {
+            return;
+        }
+
         // 获取控制器类
         $controllerName = ucfirst($this->controllerName);
         $moduleName = ucfirst($this->moduleName);
         $controllerPath = "App\\{$moduleName}\\Controllers\\{$controllerName}";
+
+        // 判断控制器存不存在
+        if (!class_exists($controllerPath)) {
+            throw new CoreHttpException(404, 'Controller:'.$controllerName);
+        }
+
         // 反射解析当前控制器类　判断是否有当前操作方法
         $reflaction     = new ReflectionClass($controllerPath);
         if(!$reflaction->hasMethod($this->actionName)) {
@@ -225,14 +314,27 @@ class RouterHandle implements Handle
         }
     }
 
-    /**
-     * 手动路由
-     *
-     * @param  string $uri 路由uri
+     /**
+     * 自定义路由
      * @return void
      */
-    public function get($uri = '')
+    private function userDefined()
     {
-        // code...
+        $module = $this->config['module'];
+        foreach ($module as $V) {
+            // 加载自定义路由配置文件
+            $routeFile = "{$this->app->rootPath}/config/{$v}/route.php";
+            if (file_exists($routeFile)) {
+                require($routeFile);
+            }
+        }
+
+        // 路由匹配
+        $uri = "{$this->moduleName}/{$this->controllerName}/{$this->actionName}";
+        if (!array_key_exists($uri, $this->getMap)) {
+            return false;
+        }
+        $this->app->responseData = $this->getMap[$uri]();
+        return true;
     }
 }
