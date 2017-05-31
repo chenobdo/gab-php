@@ -123,7 +123,7 @@ class RouterHandle implements Handle
 
         /* 路由策略　*/
         $this->routeStrategy = 'pathinfo';
-        if （(strpos($this->requestUri, 'index.php') || $app->isCli === 'true') {
+        if (strpos($this->requestUri, 'index.php') || $app->isCli === 'true') {
             $this->routeStrategy = 'general';
         }
 

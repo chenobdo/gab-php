@@ -49,7 +49,7 @@ class App
      *
      * @var string
      */
-    private $isCli　= 'false';
+    private $isCli = 'false';
 
     /**
     * 框架实例

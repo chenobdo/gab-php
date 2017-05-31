@@ -35,7 +35,7 @@ class Index
      */
     public function get()
     {
-        return App::$container->getSingle('request')
+        return \Framework\App::$container->getSingle('request')
                               ->get('password', '666');
     }
 }
