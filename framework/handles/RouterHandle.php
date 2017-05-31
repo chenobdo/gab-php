@@ -12,7 +12,6 @@
 namespace Framework\Handles;
 
 use Framework\App;
-use Framework\Handles\Handle;
 use Framework\Exceptions\CoreHttpException;
 use ReflectionClass;
 
@@ -22,71 +21,77 @@ use ReflectionClass;
 class RouterHandle implements Handle
 {
     /**
-     * 框架实例
+     * 框架实例.
      *
-     * @var object
+     * @var App
      */
     private $app;
 
     /**
-      * 默认模块
-      *
-      * @var string
-      */
-    private    $moduleName = '';
+     * 默认模块.
+     *
+     * @var string
+     */
+    private $moduleName = '';
 
      /**
-      * 默认控制器
+      * 默认控制器.
       *
       * @var string
       */
-    private    $controllerName = '';
-
-     /**
-      * 默认操作
-      *
-      * @var string
-      */
-    private    $actionName = '';
+    private $controllerName = '';
 
     /**
-      * 默认操作
-      *
-      * @var string
-      */
-    private    $routeStrategy = '';
+     * 默认操作.
+     *
+     * @var string
+     */
+    private $actionName = '';
 
-     /**
-      * 请求uri
-      *
-      * @var string
-      */
-    private    $requestUri = '';
+    /**
+     * 默认操作.
+     *
+     * @var string
+     */
+    private $routeStrategy = '';
 
+    /**
+     * 请求uri.
+     *
+     * @var string
+     */
+    private $requestUri = '';
+
+    /**
+     * 构造函数.
+     */
     public function __construct()
     {
+        // code...
     }
 
     /**
-     * 魔法函数__get
-     * @param  string $name 属性名称
+     * 魔法函数__get.
+     *
+     * @param string $name 属性名称
+     *
      * @return mixed
      */
     public function __get($name = '')
     {
-        $name = '_'.$name;
         return $this->$name;
     }
 
     /**
-     * 魔法函数__set
-     * @param  string $name  属性名称
-     * @param  string $value 属性值
+     * 魔法函数__set.
+     *
+     * @param string $name  属性名称
+     * @param mixed  $value 属性值
+     *
      * @return mixed
      */
     public function __set($name = '', $value = '')
     {
-        $name = '_'.$name;
         $this->$name = $value;
     }
 
@@ -98,8 +103,8 @@ class RouterHandle implements Handle
     public function register(App $app)
     {
         // request uri
-        $this->requestUrl = $app::$container->getSingle('request')
-                                            ->server('REQUEST_URI');
+        $this->requestUrl = $app::$container->getSingle('request')->server('REQUEST_URI');
+        // App
         $this->app = $app;
         // 获取配置
         $config = $app::$container->getSingle('config');
@@ -111,10 +116,9 @@ class RouterHandle implements Handle
         $this->actionName     = $config->config['route']['default_action'];
 
         /* 路由策略　*/
+        $this->routeStrategy = 'pathinfo';
         if (strpos($this->requestUri, 'index.php')) {
             $this->routeStrategy = 'general';
-        } else {
-            $this->routeStrategy = 'pathinfo';
         }
 
         // 开启路由
@@ -129,7 +133,7 @@ class RouterHandle implements Handle
 
         // 获取控制器类
         $controllerName = ucfirst($this->controllerName);
-        $controllerPath = "App\\$this->moduleName\\Controllers\\$controllerName";
+        $controllerPath = "App\\{$this->moduleName}\\Controllers\\{$controllerName}";
         // 反射解析当前控制器类　判断是否有当前操作方法
         $reflaction     = new ReflectionClass($controllerPath);
         if(!$reflaction->hasMethod($this->actionName)) {
@@ -172,7 +176,11 @@ class RouterHandle implements Handle
       */
     public function pathinfo()
     {
-        preg_match_all('/^\/(.*)\?/', $this->requestUri, $uri);
+        if (strpos($this->requestUri, '?')) {
+            preg_match_all('/^\/(.*)\?/', $this->requestUri, $uri);
+        } else {
+            preg_match_all('/^\/(.*)/', $this->requestUri, $uri);
+        }
         if (! isset($uri[1][0])) {
             /**
              * 默认模块/控制器/操作逻辑
