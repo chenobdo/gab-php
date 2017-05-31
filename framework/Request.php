@@ -92,32 +92,59 @@ class Request
 
     /**
      * 获取GET参数
-     * @param  string $value 参数名
+     *
+     * @param  string  $value      参数名
+     * @param  string  $default    默认值
+     * @param  boolean $checkEmpty 值为空时是否返回默认值，默认true
      * @return mixed
      */
-    public function get($value = '')
+    public function get($value = '', $default = '', $checkEmpty = true)
     {
-        return isset($this->getParams[$value]) ? $this->getParams[$value] : '';
+        if (!isset($this->getParams[$value])) {
+            return '';
+        }
+        if (empty($this->getParams[$value]) && $checkEmpty) {
+            return $default;
+        }
+        return $this->getParams[$value];
     }
 
     /**
      * 获取POST参数
-     * @param  string $value 参数名
+     *
+     * @param  string  $value      参数名
+     * @param  string  $default    默认值
+     * @param  boolean $checkEmpty 值为空时是否返回默认值，默认true
      * @return mixed
      */
-    public function post($value = '')
+    public function post($value = '', $default = '', $checkEmpty = true)
     {
-        return isset($this->postParams[$value]) ? $this->postParams[$value] : '';
+        if (! isset($this->postParams[$value])) {
+            return '';
+        }
+        if (empty($this->getParams[$value]) && $checkEmpty) {
+            return $default;
+        }
+        return $this->postParams[$value];
     }
 
     /**
      * 获取REQUEST参数
-     * @param  string $value 参数名
+     *
+     * @param  string  $value      参数名
+     * @param  string  $default    默认值
+     * @param  boolean $checkEmpty 值为空时是否返回默认值，默认true
      * @return mixed
      */
-    public function request($value = '')
+    public function request($value = '', $default = '', $checkEmpty = true)
     {
-        return isset($this->requestParams[$value]) ? $this->requestParams[$value] : '';
+        if (! isset($this->requestParams[$value])) {
+            return '';
+        }
+        if (empty($this->getParams[$value]) && $checkEmpty) {
+            return $default;
+        }
+        return $this->requestParams[$value];
     }
 
     /**
