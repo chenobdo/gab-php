@@ -37,6 +37,15 @@ class App
      */
     private $responseData;
 
+     /**
+     * 框架实例根目录
+     *
+     * @var string
+     */
+    private $rootPath;
+
+    /**
+
     /**
     * 框架实例
     *
@@ -53,9 +62,19 @@ class App
 
     /**
      * 构造
+     *
+     * @param string  $rootPath 框架实例根目录
+     * @param Closure $loader   注入自加载实例
      */
-    public function __construct()
+    public function __construct($rootPath, Closure $loader)
     {
+         // 根目录
+        $this->rootPath = $rootPath;
+
+        // 注册自加载
+        $loader();
+        Load::register($this);
+
         self::$app = $this;
         self::$container = new Container();
     }

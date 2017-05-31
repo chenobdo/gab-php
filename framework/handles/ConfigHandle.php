@@ -61,14 +61,14 @@ class ConfigHandle implements Handle
     {
 		$this->app = $app;
 		$app::$container->setSingle('config', $this);
-		$this->loadConfig();
+		$this->loadConfig($app);
     }
 
-    public function loadConfig()
+    public function loadConfig(App $app)
     {
-    	$config = require(ROOT_PATH . '/framework/config/common.php');
+    	$config = require($app->rootPath . '/framework/config/common.php');
 
-    	$database = require(ROOT_PATH . '/framework/config/database.php');
+    	$database = require($app->rootPath . '/framework/config/database.php');
 
     	$this->config = array_merge($config, $database);
     }
