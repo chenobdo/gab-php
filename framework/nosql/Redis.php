@@ -21,7 +21,7 @@ class Redis
 		$config = App::$container->getSingle('config');
 		$config = $config->config['nosql']['Redis'];
 		$redis = new rootRedis();
-		$redis->connect($config['root'], $config['port']);
+		$redis->connect($config['host'], $config['port']);
 		App::$container->setSingle('redis', $redis);
 	}
 }

@@ -270,6 +270,11 @@ class RouterHandle implements Handle
          if (! empty($actionName)) {
              $this->actionName = $actionName;
          }
+
+         // CLI 模式不输出
+        if (empty($actionName) && $this->app->isCli === 'yes') {
+            $this->app->notOutput = true;
+        }
     }
 
     /**
