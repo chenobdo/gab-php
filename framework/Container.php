@@ -59,6 +59,7 @@ class Container
      * 注入一个单类
      * @param string $alias  类名or别名
      * @param object||closure||string $object 实例或闭包或类名
+     * @return object
      */
     public function setSingle($alias = '', $object = '')
     {
@@ -66,34 +67,39 @@ class Container
 			$instance = $alias();
 			$className = get_class($instance);
 			$this->instanceMap[$className] = $instance;
-			return;
+			return $instance;
 		}
 		if (is_callable($object)) {
 			if (empty($alias)) {
 				throw new CoreHttpException(400, "{$alias} is empty");
 			}
+            if (array_key_exists($alias, $this->instanceMap)) {
+                var_dump($this->instanceMap);
+                return $this->instanceMap[$alias];
+            }
 			$this->instanceMap[$alias] = $object();
-            return;
+            return $this->instanceMap[$alias];
 		}
 		if (is_object($alias)) {
 			$className = get_class($alias);
 			if (array_key_exists($className, $this->classMap)) {
-				return;
+				return $this->instanceMap[$alias];
 			}
 			$this->instanceMap[$className] = $alias;
-			return;
+			return $this->instanceMap[$className];
 		}
 		if (is_object($object)) {
 			if (empty($alias)) {
 				throw new CoreHttpException(400, "{$alias} is empty");
 			}
 			$this->instanceMap[$alias] = $object;
-			return;
+			return $this->instanceMap[$alias];
 		}
 		if (empty($alias) && empty($object)) {
 			throw new CoreHttpException(400, "{$alias} and {$object} is empty");
 		}
 		$this->instanceMap[$alias] = new $alias();
+        return $this->instanceMap[$alias];
     }
 
     /**
