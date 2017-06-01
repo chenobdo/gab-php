@@ -14,5 +14,6 @@
         "phpunit/phpunit": "^5.7"
     },
     "require": {
+        "mongodb/mongodb": "^1.1"
     }
 }

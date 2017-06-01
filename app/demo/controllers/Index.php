@@ -59,4 +59,18 @@ class Index
             'user' => 'Gabriel'
         ]);
     }
+
+    public function instance()
+    {
+        // 请求对象
+        App::$container->getSingle('request');
+        // 配置对象
+        App::$container->getSingle('config');
+        // redis对象
+        App::$container->getSingle('redis');
+        // memcache对象
+        App::$container->getSingle('memcache');
+        // mongodb对象
+        App::$container->getSingle('mongodb');
+    }
 }
