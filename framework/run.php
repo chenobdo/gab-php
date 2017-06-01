@@ -13,6 +13,7 @@ use Framework\Handles\ErrorHandle;
 use Framework\Handles\ExceptionHandle;
 use Framework\Handles\RouterHandle;
 use Framework\Handles\ConfigHandle;
+use Framework\Handles\NosqlHandle;
 use Framework\Exceptions\CoreHttpException;
 use Framework\Request;
 use Framework\Response;
@@ -38,12 +39,6 @@ try {
         return require(__DIR__ . '/Load.php');
     });
 
-    // 注册自加载
-    // Load::register();
-
-    // 初始化应用
-    // $app = new App();
-
     /* 挂载框架handles */
 
     $app->load(function () {
@@ -60,6 +55,11 @@ try {
     $app->load(function() {
         // 加载预定义配置机制
         return new ConfigHandle();
+    });
+
+    $app->load(function () {
+        // 加载nosql机制
+        return new NosqlHandle();
     });
 
     $app->load(function () {

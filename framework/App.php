@@ -125,55 +125,47 @@ class App
     }
 
     /**
-     * 内部调用get
-     *
-     * 可构建微单体架构
-     *
-     * @param  string $uri 要调用的path
+     * 内部调用get 可构建微单体架构
+     * @param  string $uri   要调用的path
+     * @param  array  $argus 参数
      * @return void
      */
-    public function get($uri = '')
+    public function get($uri = '', $argus = [])
     {
-        return $this->callSelf('get', $uri);
+        return $this->callSelf('get', $uri, $argus);
     }
 
     /**
-     * 内部调用post
-     *
-     * 可构建微单体架构
-     *
-     * @param  string $uri 要调用的path
+     * 内部调用post 可构建微单体架构
+     * @param  string $uri   要调用的path
+     * @param  array  $argus 参数
      * @return void
      */
-    public function post($uri = '')
+    public function post($uri = '', $argus = [])
     {
-        return $this->callSelf('post', $uri);
+        return $this->callSelf('post', $uri, $argus);
     }
 
     /**
-     * 内部调用put
-     *
-     * 可构建微单体架构
-     *
-     * @param  string $uri 要调用的path
+     * 内部调用put 可构建微单体架构
+     * @param  string $uri   要调用的path
+     * @param  array  $argus 参数
      * @return void
      */
-    public function put($uri = '')
+    public function put($uri = '', $argus = [])
     {
-        return $this->callSelf('put', $uri);
+        return $this->callSelf('put', $uri, $argus);
     }
 
     /**
-     * 内部调用delete
-     *
-     * 可构建微单体架构
-     *
-     * @param  string $uri 要调用的path
+     * 内部调用delete 可构建微单体架构
+     * @param  string $uri   要调用的path
+     * @param  array  $argus 参数
      * @return void
      */
-    public function delete($uri = '')
+    public function delete($uri = '', $argus = [])
     {
-        return $this->callSelf('delete', $uri);
+        return $this->callSelf('delete', $uri, $argus);
     }
 
     /**
@@ -181,9 +173,10 @@ class App
      *
      * @param  string $method 方法
      * @param  string $uri 要调用的path
+     * @param  array  $argus  参数
      * @return json
      */
-    public function callSelf($method = '', $uri = '')
+    public function callSelf($method = '', $uri = '', $argus = [])
     {
         $requestUri = explode('/', $uri);
         if (count($requestUri) !== 3) {
@@ -191,6 +184,9 @@ class App
         }
         $request = self::$container->getSingle('request');
         $request->method = $method;
+        $request->requestParams = $argus;
+        $request->getParams     = $argus;
+        $request->postParams    = $argus;
         $router = self::$container->getSingle('router');
         $router->moduleName = $requestUri[0];
         $router->controllerName = $requestUri[1];
