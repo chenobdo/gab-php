@@ -12,6 +12,7 @@
 namespace App\Demo\Controllers;
 
 use Framework\App;
+use Framework\Orm\Db\Mysql;
 
 /**
  * Index Controller
@@ -72,5 +73,18 @@ class Index
         App::$container->getSingle('memcache');
         // mongodb对象
         App::$container->getSingle('mongodb');
+    }
+
+    public function test()
+    {
+        $request = App::$container->getSingle('request');
+        return [
+            'username' =>  $request->get('username', 'default value')
+        ];
+    }
+
+    public function mysql()
+    {
+        $instance = new Mysql();
     }
 }

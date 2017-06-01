@@ -1,8 +1,9 @@
+仿写老虎大大的 easy-php<https://github.com/TIGERB/easy-php>
+<p align="center"><img width="60%" src="logo.jpeg"><p>
+
 <h1 align="center">Gab PHP</h1>
 
 <p align="center"> A lightweight PHP framework for studying <p>
-
-<p align="center"> <a href="./README-CN.md">中文版</a>　<p>
 
 ### How to build a PHP framework by ourself ?
 
@@ -140,6 +141,8 @@ Where is the view layer?I abandon it, beacuse I chose the SPA for frontend, deta
 ###  Using Vue For View
 
 ###  ORM
+
+###  Service Container
 
 ###  Nosql Support
 

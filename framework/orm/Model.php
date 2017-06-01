@@ -9,19 +9,13 @@
  *                                 *
  ***********************************/
 
-namespace Framework\Nosql;
+namespace Framework\Orm;
 
 use Framework\App;
-use Redis as rootRedis;
+use Framework\Exceptions\CoreHttpException;
 
-class Redis
+class Model
 {
 	public function __construct()
-	{
-		$config = App::$container->getSingle('config');
-		$config = $config->config['nosql']['Redis'];
-		$redis = new rootRedis();
-		$redis->connect($config['host'], $config['port']);
-		App::$container->setSingle('redis', $redis);
-	}
+	{}
 }

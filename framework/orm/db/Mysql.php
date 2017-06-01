@@ -9,19 +9,27 @@
  *                                 *
  ***********************************/
 
-namespace Framework\Nosql;
+namespace Framework\Orm\Db;
 
 use Framework\App;
-use Redis as rootRedis;
+use Framework\Exception\CoreHttpException;
+use PDO;
 
-class Redis
+/**
+ * Mysql 实例类
+ */
+class Mysql
 {
 	public function __construct()
 	{
 		$config = App::$container->getSingle('config');
-		$config = $config->config['nosql']['Redis'];
-		$redis = new rootRedis();
-		$redis->connect($config['host'], $config['port']);
-		App::$container->setSingle('redis', $redis);
+		$config = $config->config;
+		$dbConfig = $config['database'];
+		$connect = "{$dbConfig['dbtype']}:dbname={$dbConfig['dbname']};host={$dbConfig['host']};";
+		$pdo = new PDO(
+			$connect,
+			$dbConfig['username'],
+			$dbConfig['password']
+		);
 	}
 }
