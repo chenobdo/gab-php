@@ -12,6 +12,7 @@
 namespace Framework;
 
 use Framework\Container;
+use Framework\Exceptions\CoreHttpException;
 use Closure;
 
 /**
@@ -20,22 +21,10 @@ use Closure;
 class App
 {
     /**
-     * 框架实例
-     * @var object
-     */
-    public static $app;
-
-    /**
     　* 框架加载流程一系列处理类集合
     　* @var array
     　*/
     private $handlesList = [];
-
-    /**
-     * 服务容器
-     * @var object
-     */
-    private $container;
 
     /**
      * 请求对象
@@ -50,12 +39,63 @@ class App
     private $responseData;
 
     /**
-     * 构造
+     * 框架实例根目录
+     *
+     * @var string
      */
-    public function __construct()
+    private $rootPath;
+
+    /**
+     * cli模式
+     *
+     * @var string
+     */
+    private $isCli = 'false';
+
+    /**
+     * 是否输出响应结果
+     *
+     * 默认输出
+     *
+     * cli模式　访问路径为空　不输出
+     *
+     * @var boolean
+     */
+    private $notOutput = false;
+
+    /**
+    * 框架实例
+    *
+    * @var object
+    */
+    public static $app;
+
+    /**
+    * 服务容器
+    *
+    * @var object
+    */
+    public static $container;
+
+    /**
+     * 构造
+     *
+     * @param string  $rootPath 框架实例根目录
+     * @param Closure $loader   注入自加载实例
+     */
+    public function __construct($rootPath, Closure $loader)
     {
+        // cli模式
+        $this->isCli    = getenv('IS_CLI');
+        // 根目录
+        $this->rootPath = $rootPath;
+
+        // 注册自加载
+        $loader();
+        Load::register($this);
+
         self::$app = $this;
-        $this->container = new Container();
+        self::$container = new Container();
     }
 
     /**
@@ -84,16 +124,97 @@ class App
         $this->handlesList[] = $handle;
     }
 
+    /**
+     * 内部调用get
+     *
+     * 可构建微单体架构
+     *
+     * @param  string $uri 要调用的path
+     * @return void
+     */
+    public function get($uri = '')
+    {
+        return $this->callSelf('get', $uri);
+    }
+
+    /**
+     * 内部调用post
+     *
+     * 可构建微单体架构
+     *
+     * @param  string $uri 要调用的path
+     * @return void
+     */
+    public function post($uri = '')
+    {
+        return $this->callSelf('post', $uri);
+    }
+
+    /**
+     * 内部调用put
+     *
+     * 可构建微单体架构
+     *
+     * @param  string $uri 要调用的path
+     * @return void
+     */
+    public function put($uri = '')
+    {
+        return $this->callSelf('put', $uri);
+    }
+
+    /**
+     * 内部调用delete
+     *
+     * 可构建微单体架构
+     *
+     * @param  string $uri 要调用的path
+     * @return void
+     */
+    public function delete($uri = '')
+    {
+        return $this->callSelf('delete', $uri);
+    }
+
+    /**
+     * 内部调用 可构建微单体架构
+     *
+     * @param  string $method 方法
+     * @param  string $uri 要调用的path
+     * @return json
+     */
+    public function callSelf($method = '', $uri = '')
+    {
+        $requestUri = explode('/', $uri);
+        if (count($requestUri) !== 3) {
+            throw new CoreHttpException(400);
+        }
+        $request = self::$container->getSingle('request');
+        $request->method = $method;
+        $router = self::$container->getSingle('router');
+        $router->moduleName = $requestUri[0];
+        $router->controllerName = $requestUri[1];
+        $router->actionName = $requestUri[2];
+        $router->routeStrategy = 'microMonomer';
+        $router->route();
+        return $this->responseData;
+    }
+
     public function run(Closure $request)
     {
-        $this->container->setSingle('request', $request);
+        self::$container->setSingle('request', $request);
         foreach ($this->handlesList as $handle) {
-            $handle()->register($this);
+            $instance = $handle();
+            self::$container->setSingle(get_class($instance), $instance);
+            $instance->register($this);
         }
     }
 
     public function response(Closure $closure)
     {
+        if ($this->notOutput === true) {
+            return;
+        }
         $closure()->restSuccess($this->responseData);
     }
 }

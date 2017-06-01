@@ -58,15 +58,69 @@ class Request
      */
     private $postParams = [];
 
+    /**
+     * http方法名称
+     * @var string
+     */
+    private $method = '';
+
+    /**
+     * 服务ip
+     * @var string
+     */
+    private $serverIp = '';
+
+    /**
+     * 客户端ip
+     * @var string
+     */
+    private $clientIp = '';
+
+    /**
+     * 请求开始时间
+     * @var float
+     */
+    private $beginTime = 0;
+
+    /**
+     * 请求结束时间
+     * @var float
+     */
+    private $endTime = 0;
+
+    /**
+     * 请求消耗时间
+     *
+     * 毫秒
+     *
+     * @var int
+     */
+    private $consumeTime = 0;
+
 	/**
 	 * 构造
 	 */
-	function __construct()
+	function __construct(App $app)
 	{
 		$this->serverParams = $_SERVER;
-		$this->requestParams = $_REQUEST;
-		$this->getParams = $_GET;
-		$this->postParams = $_POST;
+        $this->method       = isset($_SERVER['REQUEST_METHOD']) ?
+            strtolower($_SERVER['REQUEST_METHOD']) : 'get';
+        $this->serverIp     = isset($_SERVER['REMOTE_ADDR']) ?
+            $_SERVER['REMOTE_ADDR'] : '';
+        $this->clientIp     = isset($_SERVER['SERVER_ADDR']) ?
+            $_SERVER['REMOTE_ADDR'] : '';
+        $this->beginTime    = isset($_SERVER['REQUEST_TIME_FLOAT']) ?
+            $_SERVER['REQUEST_TIME_FLOAT'] : time(true);
+        if ($app->isCli === 'yes') {
+            // cli 模式
+            $this->requestParams = $_REQUEST['argv'];
+            $this->getParams     = $_REQUEST['argv'];
+            $this->postParams    = $_REQUEST['argv'];
+        } else {
+    		$this->requestParams = $_REQUEST;
+    		$this->getParams = $_GET;
+    		$this->postParams = $_POST;
+        }
 	}
 
 	/**
@@ -92,32 +146,69 @@ class Request
 
     /**
      * 获取GET参数
-     * @param  string $value 参数名
+     *
+     * @param  string  $value      参数名
+     * @param  string  $default    默认值
+     * @param  boolean $checkEmpty 值为空时是否返回默认值，默认true
      * @return mixed
      */
-    public function get($value = '')
+    public function get($value = '', $default = '', $checkEmpty = true)
     {
-        return isset($this->getParams[$value]) ? $this->getParams[$value] : '';
+        if (!isset($this->getParams[$value])) {
+            return '';
+        }
+        if (empty($this->getParams[$value]) && $checkEmpty) {
+            return $default;
+        }
+        return $this->getParams[$value];
     }
 
     /**
      * 获取POST参数
-     * @param  string $value 参数名
+     *
+     * @param  string  $value      参数名
+     * @param  string  $default    默认值
+     * @param  boolean $checkEmpty 值为空时是否返回默认值，默认true
      * @return mixed
      */
-    public function post($value = '')
+    public function post($value = '', $default = '', $checkEmpty = true)
     {
-        return isset($this->postParams[$value]) ? $this->postParams[$value] : '';
+        if (! isset($this->postParams[$value])) {
+            return '';
+        }
+        if (empty($this->getParams[$value]) && $checkEmpty) {
+            return $default;
+        }
+        return $this->postParams[$value];
     }
 
     /**
      * 获取REQUEST参数
-     * @param  string $value 参数名
+     *
+     * @param  string  $value      参数名
+     * @param  string  $default    默认值
+     * @param  boolean $checkEmpty 值为空时是否返回默认值，默认true
      * @return mixed
      */
-    public function request($value = '')
+    public function request($value = '', $default = '', $checkEmpty = true)
     {
-        return isset($this->requestParams[$value]) ? $this->requestParams[$value] : '';
+        if (! isset($this->requestParams[$value])) {
+            return '';
+        }
+        if (empty($this->getParams[$value]) && $checkEmpty) {
+            return $default;
+        }
+        return $this->requestParams[$value];
+    }
+
+    /**
+     * 获取所有参数
+     *
+     * @return array
+     */
+    public function all()
+    {
+        return $this->requestParams;
     }
 
     /**
@@ -125,7 +216,7 @@ class Request
      * @param  string $value 参数名
      * @return mixed
      */
-    public function getServer($value = '')
+    public function server($value = '')
     {
         return isset($this->serverParams[$value]) ? $this->serverParams[$value] : '';
     }

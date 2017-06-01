@@ -9,9 +9,23 @@
  *                                 *
  ***********************************/
 
-return [
-    /* mysql默认配置 */
-    'mysql' => [
+namespace Tests\Demo;
 
-    ]
-];
+use Tests\TestCase;
+use Framework\App;
+
+class DemoTest extends TestCase
+{
+	/**
+     *　演示测试
+     */
+    public function testDemo()
+    {
+        $index = new Index();
+
+        $this->assertEquals(
+            'Hello Gab PHP',
+             App::$app->get('demo/index/hello')
+        );
+    }
+}

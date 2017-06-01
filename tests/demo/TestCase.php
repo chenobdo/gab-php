@@ -9,9 +9,16 @@
  *                                 *
  ***********************************/
 
-return [
-    /* mysql默认配置 */
-    'mysql' => [
+namespace Tests;
 
-    ]
-];
+use PHPUnit\Framework\TestCase as PhpunitCase;
+
+/**
+ * 单元测试用例
+ *
+ * @author TIERGB <https://github.com/TIGERB>
+ */
+class TestCase extends PhpunitCase
+{
+
+}
