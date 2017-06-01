@@ -54,6 +54,21 @@ class Response
 	}
 
 	/**
+     * cli模式成功响应
+     *
+     * @param  mixed $response 响应内容
+     * @return array
+     */
+    public function cliModeSuccess($response)
+    {
+        var_dump([
+            'code'    => 200,
+            'message' => 'OK',
+            'result'  => $response
+        ]);
+    }
+
+	/**
 	 * REST风格 失败响应
 	 * @param  mixed $response 响应内容
 	 * @param  integer $code

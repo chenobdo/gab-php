@@ -16,39 +16,15 @@ use Framework\Exceptions\CoreHttpException;
 /**
  * Sql 解释器
  */
-class Interpreter
+trait Interpreter
 {
-	/**
-    * 表名
-    * @var string
-    */
+    public  $params    = '';
     private $tableName = '';
-
-    /**
-    * 当前类的实例
-    * @var object
-    */
-    private static $instance;
-
-    public static function db($tableName = '')
-    {
-    	if (empty($tableName)) {
-    		throw new CoreHttpException("argument tableName is null", 400);
-    	}
-    	// 单例
-    	if (!self::$instance instanceof self) {
-    		self::$instance = new self();
-    	}
-    	// 更新实例表名
-        self::$instance->setTableName($tableName);
-        // 返回实例
-        return self::$instance;
-    }
-
-    private function setTableName($tableName)
-    {
-    	$this->tableName = $tableName;
-    }
+    private $where     = '';
+    private $orderBy   = '';
+    private $limit     = '';
+    private $offset    = '';
+    private $sql       = '';
 
     /**
      * 增加数据
@@ -88,7 +64,7 @@ class Interpreter
 		unset($k);
     	unset($v);
 
-    	$sql = "INSERT INTO `{$this->_tableName}` ({$fieldString}) VALUES ({$valueString})";
+    	$sql = "INSERT INTO `{$this->tableName}` ({$fieldString}) VALUES ({$valueString})";
     	echo $sql . "\n";
     }
 
@@ -146,44 +122,88 @@ class Interpreter
             $set .= "`{$k}` = '$v',";
         }
 
-        $sql = "UPDATE `{$this->_tableName}` SET {$set}";
+        $sql = "UPDATE `{$this->tableName}` SET {$set}";
 
         echo $sql . "\n";
     }
 
     /**
-    *  查找一条数据
-    *
-    * @param  array $data 数据
-    * @return mixed
-    */
-    public function find($data=[])
+     *  查找一条数据
+     *
+     * @return mixed
+     */
+    public function select($data = [])
+    {
+        $this->sql = "SELECT * FROM `{$this->tableName}`";
+    }
+
+    public function where($data = [])
     {
         if (empty($data)) {
-            throw new CoreHttpException("argument data is null", 400);
+            return;
         }
 
-        // 拼接where语句
-        $count = (int)count($data);
-        $where = '';
-        $dataCopy = $data;
-        $pop = array_pop($dataCopy);
+        $count = count($data);
+
+        // 单条件
         if ($count === 1) {
             $field = array_keys($data)[0];
             $value = array_values($data)[0];
-            $where = "`{$field}` = '{$value}'";
-        }else{
-            foreach ($data as $k => $v) {
-                if ($v === $pop) {
-                    $where .= "`{$k}` = '{$v}'";
-                    continue;
-                }
-                $where .= "`{$k}` = '{$v}' AND ";
+            if (!is_array($value)) {
+                $this->where = " WHERE `{$field}` = :{$field}";
+                $this->params = $data;
+                return $this;
             }
+            $this->where = "WHERE `{$field}` {$value[0]} :{$field}";
+            $this->params[$field] = $value[1];
+            return $this;
         }
 
-        $sql = "SELECT * FROM `{$this->_tableName}` WHERE {$where}";
+        // 多条件
+        $tmp = $data;
+        $last = array_pop($tmp);
+        foreach ($data as $k => $v) {
+            if ($v === $last) {
+                if (!is_array($v)) {
+                    $this->where .= "`{$k}` = :{$k}";
+                    $this->params[$k] = $v;
+                    continue;
+                }
+                $this->where .= "`{$k}` {$v[0]} :{$k}";
+                $this->params[$k] = $v[1];
+                continue;
+            }
+            if (! is_array($v)){
+                $this->where  .= " WHERE `{$k}` = :{$k} AND ";
+                $this->params[$k] = $v;
+                continue;
+            }
+            $this->where .= " WHERE `{$k}` {$v[0]} :{$k} AND ";
+            $this->params[$k] = $v[1];
+            continue;
+        }
+        return $this;
+    }
 
-        echo $sql . "\n";
+    public function orderBy($data = '')
+    {
+        if (!is_string($data)) {
+            throw new  CoreHttpException(400);
+        }
+        $this->orderBy = " order by {$data}";
+        return $this;
+    }
+
+    public function limit($start = 0, $len = 0)
+    {
+        if (! is_numeric($start) || (! is_numeric($len))) {
+            throw new CoreHttpException(400);
+        }
+        if ($len === 0) {
+            $this->limit = " limit {$start}";
+            return $this;
+        }
+        $this->limit = " limit {$start},{$len}";
+        return $this;
     }
 }
