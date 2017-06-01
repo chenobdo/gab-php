@@ -81,7 +81,7 @@ class CoreHttpException extends Exception
      */
     public static function reponseErr($e)
     {
-        header('Content-Type:Application/json; Charset=utf-8');
+        // header('Content-Type:Application/json; Charset=utf-8');
         die(json_encode([
             '__coreError' => [
                 'code'    => 500,

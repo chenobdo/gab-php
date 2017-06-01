@@ -53,6 +53,17 @@ class App
     private $isCli = 'false';
 
     /**
+     * 是否输出响应结果
+     *
+     * 默认输出
+     *
+     * cli模式　访问路径为空　不输出
+     *
+     * @var boolean
+     */
+    private $notOutput = false;
+
+    /**
     * 框架实例
     *
     * @var object
@@ -114,34 +125,72 @@ class App
     }
 
     /**
-     * 内部调用
+     * 内部调用get
      *
      * 可构建微单体架构
      *
      * @param  string $uri 要调用的path
-     * @return json
+     * @return void
      */
     public function get($uri = '')
     {
-        $requestUri = explode('/', $uri);
-        if (count($requestUri) !== 3) {
-            throw new CoreHttpException(400);
-        }
-        $router = self::$container->getSingle('router');
-        $router->moduleName = $requestUri[0];
-        $router->controllerName = $requestUri[1];
-        $router->actionName = $requestUri[2];
-        $router->routeStrategy = 'microMonomer';
-        $router->route();
-        return $this->responseData;
+        return $this->callSelf('get', $uri);
     }
 
-    public function get($uri = '')
+    /**
+     * 内部调用post
+     *
+     * 可构建微单体架构
+     *
+     * @param  string $uri 要调用的path
+     * @return void
+     */
+    public function post($uri = '')
+    {
+        return $this->callSelf('post', $uri);
+    }
+
+    /**
+     * 内部调用put
+     *
+     * 可构建微单体架构
+     *
+     * @param  string $uri 要调用的path
+     * @return void
+     */
+    public function put($uri = '')
+    {
+        return $this->callSelf('put', $uri);
+    }
+
+    /**
+     * 内部调用delete
+     *
+     * 可构建微单体架构
+     *
+     * @param  string $uri 要调用的path
+     * @return void
+     */
+    public function delete($uri = '')
+    {
+        return $this->callSelf('delete', $uri);
+    }
+
+    /**
+     * 内部调用 可构建微单体架构
+     *
+     * @param  string $method 方法
+     * @param  string $uri 要调用的path
+     * @return json
+     */
+    public function callSelf($method = '', $uri = '')
     {
         $requestUri = explode('/', $uri);
         if (count($requestUri) !== 3) {
             throw new CoreHttpException(400);
         }
+        $request = self::$container->getSingle('request');
+        $request->method = $method;
         $router = self::$container->getSingle('router');
         $router->moduleName = $requestUri[0];
         $router->controllerName = $requestUri[1];
@@ -163,6 +212,9 @@ class App
 
     public function response(Closure $closure)
     {
+        if ($this->notOutput === true) {
+            return;
+        }
         $closure()->restSuccess($this->responseData);
     }
 }

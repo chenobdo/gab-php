@@ -12,7 +12,7 @@
 namespace Tests\Demo;
 
 use Tests\TestCase;
-use App\Demo\Controllers\Index;
+use Framework\App;
 
 class DemoTest extends TestCase
 {
@@ -25,7 +25,7 @@ class DemoTest extends TestCase
 
         $this->assertEquals(
             'Hello Gab PHP',
-            $index->hello()
+             App::$app->get('demo/index/hello')
         );
     }
 }
