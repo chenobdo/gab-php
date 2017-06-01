@@ -58,12 +58,55 @@ class Request
      */
     private $postParams = [];
 
+    /**
+     * http方法名称
+     * @var string
+     */
+    private $method = '';
+
+    /**
+     * 服务ip
+     * @var string
+     */
+    private $serverIp = '';
+
+    /**
+     * 客户端ip
+     * @var string
+     */
+    private $clientIp = '';
+
+    /**
+     * 请求开始时间
+     * @var float
+     */
+    private $beginTime = 0;
+
+    /**
+     * 请求结束时间
+     * @var float
+     */
+    private $endTime = 0;
+
+    /**
+     * 请求消耗时间
+     *
+     * 毫秒
+     *
+     * @var int
+     */
+    private $consumeTime = 0;
+
 	/**
 	 * 构造
 	 */
 	function __construct(App $app)
 	{
 		$this->serverParams = $_SERVER;
+        $this->method       = strtolower($_SERVER['REQUEST_METHOD']);
+        $this->serverIp     = $_SERVER['REMOTE_ADDR'];
+        $this->clientIp     = $_SERVER['SERVER_ADDR'];
+        $this->beginTime    = $_SERVER['REQUEST_TIME_FLOAT'];
         if ($app->isCli === 'true') {
             // cli 模式
             $this->requestParams = $_REQUEST['argv'];
