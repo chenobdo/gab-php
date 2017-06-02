@@ -74,7 +74,6 @@ class Container
 				throw new CoreHttpException(400, "{$alias} is empty");
 			}
             if (array_key_exists($alias, $this->instanceMap)) {
-                var_dump($this->instanceMap);
                 return $this->instanceMap[$alias];
             }
 			$this->instanceMap[$alias] = $object();

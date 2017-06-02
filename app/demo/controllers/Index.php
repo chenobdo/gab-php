@@ -85,7 +85,7 @@ class Index
         $instance = DB::table('user');
         $res = $instance->where($where)
                         ->orderBy('id asc')
-                        ->find();
+                        ->findOne();
         $sql = $instance->sql;
         return $res;
     }

@@ -11,11 +11,10 @@
 
 namespace App\Demo\Controllers;
 
-use Framework\App;
-use Framework\Orm\Db\Mysql;
+use App\Demo\Models\TestTable;
 
 /**
- * Index Controller
+ * Demo Controller
  *
  * @desc default controller
  *
@@ -42,5 +41,11 @@ class Demo
         ];
         $data = array_fill(0, 20, $data);
         return $data;
+    }
+
+    public function modelExample()
+    {
+        $testTableModel = new TestTable();
+        return $testTableModel->modelFindDemo();
     }
 }

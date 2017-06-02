@@ -31,7 +31,16 @@ class DB
      *
      * @var string
      */
-    private $dbtype  = '';
+    protected $dbtype  = '';
+
+    /**
+     * 表名称
+     *
+     * table name
+     *
+     * @var string
+     */
+    protected $tableName = '';
 
     /**
      * 数据库策略映射
@@ -40,7 +49,7 @@ class DB
      *
      * @var array
      */
-    private $dbStrategyMap  = [
+    protected $dbStrategyMap  = [
         'mysqldb' => 'Framework\Orm\Db\Mysql'
     ];
 
@@ -49,7 +58,7 @@ class DB
      *
      * @var object
      */
-    private $dbInstance;
+    protected $dbInstance;
 
     /**
      * 自增id
@@ -58,16 +67,28 @@ class DB
      *
      * @var string
      */
-    private $id = '';
+    protected $id = '';
+
+     /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+        $this->init();
+    }
 
     public function table($tableName = '')
     {
     	$db = new self;
-    	$DB = App::$container->setSingle('DB', $db);
-    	$DB->tableName = $tableName;
-    	$DB->init();
+        $db->tableName = $tableName;
+        $prefix = App::$container->getSingle('config')
+                                 ->config['database']['dbprefix'];
+        if (! empty($prefix)) {
+            $this->tableName = $prefix . '_' . $this->tableName;
+        }
+        $db->init();
 
-    	return $DB;
+        return $db;
     }
 
     public function init()

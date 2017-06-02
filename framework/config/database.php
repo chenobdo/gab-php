@@ -13,6 +13,7 @@ return [
     /* 默认配置 */
     'database' => [
         'dbtype'   => 'mysqldb',
+        'dbprefix' => 'g',
         'dbname'   => 'Gab',
         'dbhost'     => 'localhost',
         'username' => 'root',
