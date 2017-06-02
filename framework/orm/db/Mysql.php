@@ -125,7 +125,7 @@ class Mysql
      */
     public function findOne(DB $db)
     {
-    	$this->pdoStatement = $this->pdo->prepare($b->sql);
+    	$this->pdoStatement = $this->pdo->prepare($db->sql);
     	$this->bindValue($db);
     	$this->pdoStatement->execute();
     	return $this->pdoStatement->fetchAll(PDO::FETCH_ASSOC);
@@ -141,7 +141,7 @@ class Mysql
     {
         $this->pdoStatement = $this->pdo->prepare($db->sql);
         $this->bindValue($db);
-        $res = $this->pdoStatement->execute();
+        $this->pdoStatement->execute();
         return $db->id  = $this->pdo->lastInsertId();
     }
 
@@ -155,7 +155,8 @@ class Mysql
     {
         $this->pdoStatement = $this->pdo->prepare($db->sql);
         $this->bindValue($db);
-        return $this->pdoStatement->execute();
+        $this->pdoStatement->execute();
+        return $this->pdoStatement->rowCount();
     }
 
     /**
@@ -169,6 +170,21 @@ class Mysql
         $this->pdoStatement = $this->pdo->prepare($db->sql);
         $this->bindValue($db);
         return $this->pdoStatement->execute();
+    }
+
+    /**
+     * query
+     *
+     * @param  DB     $db DB instance
+     * @return boolean
+     */
+    public function query(DB $db)
+    {
+        $res = [];
+        foreach ($this->pdo->query($db->sql, PDO::FETCH_ASSOC) as $v) {
+            $res[] = $v;
+        }
+        return $res;
     }
 
     /**
