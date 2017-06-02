@@ -77,14 +77,14 @@ class DB
         $this->init();
     }
 
-    public function table($tableName = '')
+    static public function table($tableName = '')
     {
     	$db = new self;
         $db->tableName = $tableName;
         $prefix = App::$container->getSingle('config')
                                  ->config['database']['dbprefix'];
         if (! empty($prefix)) {
-            $this->tableName = $prefix . '_' . $this->tableName;
+            $db->tableName = $prefix . '_' . $db->tableName;
         }
         $db->init();
 
@@ -117,7 +117,7 @@ class DB
     public function findOne($data = [])
     {
     	$this->select($data);
-    	$this->bindSql();
+    	$this->buildSql();
     	$functionName = __FUNCTION__;
  		return $this->dbInstance->$functionName($this);
     }
@@ -130,7 +130,7 @@ class DB
     public function findAll($data = [])
     {
     	$this->select($data);
-    	$this->bindSql();
+    	$this->buildSql();
     	$functionName = __FUNCTION__;
  		return $this->dbInstance->$functionName($this);
     }
@@ -248,10 +248,5 @@ class DB
     public function __set($name = '', $value = '')
     {
         $this->$name = $value;
-    }
-
-    public function __construct()
-    {
-
     }
 }

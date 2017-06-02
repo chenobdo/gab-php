@@ -336,7 +336,7 @@ class RouterHandle implements Handle
     private function userDefined()
     {
         $module = $this->config->config['module'];
-        foreach ($module as $V) {
+        foreach ($module as $v) {
             // 加载自定义路由配置文件
             $routeFile = "{$this->app->rootPath}/config/{$v}/route.php";
             if (file_exists($routeFile)) {
