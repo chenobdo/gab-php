@@ -38,10 +38,12 @@ class Index
      * @example domain/Demo/Index/get?username=test&password=123456
      * @return  json
      */
-    public function get()
+    public function test()
     {
-        return App::$container->getSingle('request')
-                              ->get('password', '666');
+        $request = App::$container->getSingle('request');
+        return [
+            'username' => $request->get('username', 'default value');
+        ];
     }
 
     /**
@@ -75,34 +77,103 @@ class Index
         App::$container->getSingle('mongodb');
     }
 
-    /**
-     * sql 操作示例
-     * @return void
-     */
-    public function mysqlDemo()
+    public function dbFindDemo()
     {
         $where = [
-            'id' => ['>=', 2],
-            'name' => 4
+            'id' => ['>=', 2]
         ];
-        $instance = DB::table('test');
+        $instance = DB::table('user');
         $res = $instance->where($where)
                         ->orderBy('id asc')
-                        ->limit(1)
-                        ->findAll();
+                        ->find();
         $sql = $instance->sql;
+        return $res;
     }
 
-    public function test()
+    public function dbFindAllDemo()
     {
-        $request = App::$container->getSingle('request');
-        return [
-            'username' =>  $request->get('username', 'default value')
+        $where = [
+            'id'   => ['>=', 2]
         ];
+        $instance = DB::table('user');
+        $res      = $instance->where($where)
+                             ->orderBy('id asc')
+                             ->limit(5)
+                             ->findAll();
+        $sql      = $instance->sql;
+
+        // return $sql;
+        return $res;
     }
 
-    public function mysql()
+    public function dbSaveDemo()
     {
-        $instance = new Mysql();
+        $data = [
+            'nickname' => 'gab-php'
+        ];
+        $instance = DB::table('user');
+        $res      = $instance->save($data);
+        $sql      = $instance->sql;
+
+        // return $sql;
+        return $res;
+    }
+
+    public function dbDeleteDemo()
+    {
+        $where = [
+            'id'   => ['>=', 2],
+        ];
+        $instance = DB::table('user');
+        $res      = $instance->where($where)
+                             ->delete();
+        $sql      = $instance->sql;
+
+        // return $sql;
+        return $res;
+    }
+
+    /**
+     * sql 操作示例
+     *
+     * Update
+     *
+     * @return void
+     */
+    public function dbUpdateDemo()
+    {
+        $where = [
+            'id'   => ['>=', 2],
+        ];
+        $instance = DB::table('user');
+        $res      = $instance->where($where)
+                             ->update([
+                                 'nickname' => 'easy'
+                             ]);
+        $sql      = $instance->sql;
+
+        // return $sql;
+        return $res;
+    }
+
+     /**
+     * sql 操作示例
+     *
+     * Count
+     *
+     * @return void
+     */
+    public function dbCountDemo()
+    {
+        $where = [
+            'id'   => ['>=', 2],
+        ];
+        $instance = DB::table('user');
+        $res      = $instance->where($where)
+                             ->count('id asc');
+        $sql      = $instance->sql;
+
+        // return $sql;
+        return $res;
     }
 }

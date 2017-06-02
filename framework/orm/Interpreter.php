@@ -18,12 +18,67 @@ use Framework\Exceptions\CoreHttpException;
  */
 trait Interpreter
 {
-    public  $params    = '';
+     /**
+     * 表名称
+     *
+     * table name
+     *
+     * @var string
+     */
     private $tableName = '';
+
+    /**
+     * 查询条件
+     *
+     * query where condition
+     *
+     * @var string
+     */
     private $where     = '';
+
+    /**
+     * 查询参数
+     *
+     * query params
+     *
+     * @var string
+     */
+    public  $params    = '';
+
+     /**
+     * 排序条件
+     *
+     * sort condition
+     *
+     * @var string
+     */
     private $orderBy   = '';
+
+    /**
+     * 查询限制
+     *
+     * query quantity limit
+     *
+     * @var string
+     */
     private $limit     = '';
+
+    /**
+     * 查询偏移量
+     *
+     * query offset
+     *
+     * @var string
+     */
     private $offset    = '';
+
+    /**
+     * 表名称
+     *
+     * table name
+     *
+     * @var string
+     */
     private $sql       = '';
 
     /**
@@ -36,17 +91,24 @@ trait Interpreter
     	if (empty($data)) {
     		throw new CoreHttpException("argument data is null", 400);
     	}
-    	$count = count($data);
-    	// 拼接字段
-		$field = array_keys($data);
-		$fieldString = '';
-		foreach ($field as $k => $v) {
-			if ($k === intval($count - 1)) {
-				$fieldString .= "`{$v}`";
-				continue;
-			}
-			$fieldString .= "`{$v}`".",";
-		}
+
+        $fieldString = '';
+        $valueString = '';
+        $i = 0;
+        foreach ($data as $k => $v) {
+            if ($i === 0) {
+                $fieldString .= "`{$k}`";
+                $valueString .= ":{$v}";
+                $this->params[$k] = $v;
+                ++$i;
+                continue;
+            } else {
+                $fieldString .= "`{$k}`".',';
+                $valueString .= ":{$k}";
+                $this->params[$k] = $v;
+                ++$i;
+            }
+        }
 		unset($k);
     	unset($v);
 
@@ -64,67 +126,38 @@ trait Interpreter
 		unset($k);
     	unset($v);
 
-    	$sql = "INSERT INTO `{$this->tableName}` ({$fieldString}) VALUES ({$valueString})";
-    	echo $sql . "\n";
-    }
-
-    public function delete($data = [])
-    {
-    	if (empty($data)) {
-    		throw new CoreHttpException("argument data is null", 400);
-    	}
-
-    	//拼接where语句
-    	$count = count($data);
-    	$where = '';
-    	$dataCopy = $data;
-    	$pop = array_pop($dataCopy);
-    	if ($count === 1) {
-			$field = array_keys($data)[0];
-			$value = array_values($data)[0];
-			$where = "`{$field}` = '{$value}'";
-    	} else {
-    		foreach ($data as $k => $v) {
-    			if ($v === $pop) {
-    				$where .= "`{$k}` = '{$v}'";
-    				continue;
-    			}
-    			$where .= "`{$k}` = '{$v}' AND ";
-    		}
-    	}
-
-    	$sql = "DELETE FROM `{$this->tableName}` WHERE {$where}";
-    	echo $sql . "\n";
+        $this->sql = "INSERT INTO `{$this->tableName}` ({$fieldString}) VALUES ({$valueString})";
     }
 
     /**
-    *  更新一条数据
+    *  删除数据
     *
-    * @param  array $data 数据
-    * @return mixed
+    * @return void
     */
-    public function update($data=[])
+    public function del($data=[])
+    {
+        $this->sql = "DELETE FROM `{$this->tableName}`";
+    }
+
+    public function updateData($data = [])
     {
         if (empty($data)) {
             throw new CoreHttpException("argument data is null", 400);
-        }
-        if (empty($data['id'])) {
-            throw new CoreHttpException("argument data['id'] is null", 400);
         }
         $set = '';
         $dataCopy = $data;
         $pop = array_pop($dataCopy);
         foreach ($data as $k => $v) {
             if ($v === $pop) {
-                $set .= "`{$k}` = '$v'";
+                $set .= "`{$k}` = :$k";
+                $this->params[$k] = $v;
                 continue;
             }
-            $set .= "`{$k}` = '$v',";
+            $set .= "`{$k}` = :$k,";
+            $this->params[$k] = $v;
         }
 
-        $sql = "UPDATE `{$this->tableName}` SET {$set}";
-
-        echo $sql . "\n";
+        $this->sql = "UPDATE `{$this->tableName}` SET {$set}";
     }
 
     /**
@@ -149,22 +182,22 @@ trait Interpreter
         if ($count === 1) {
             $field = array_keys($data)[0];
             $value = array_values($data)[0];
-            if (!is_array($value)) {
-                $this->where = " WHERE `{$field}` = :{$field}";
+            if (! is_array($value)){
+                $this->where  = " WHERE `{$field}` = :{$field}";
                 $this->params = $data;
                 return $this;
             }
-            $this->where = "WHERE `{$field}` {$value[0]} :{$field}";
+            $this->where = " WHERE `{$field}` {$value[0]} :{$field}";
             $this->params[$field] = $value[1];
             return $this;
         }
 
         // 多条件
-        $tmp = $data;
+        $tmp  = $data;
         $last = array_pop($tmp);
         foreach ($data as $k => $v) {
             if ($v === $last) {
-                if (!is_array($v)) {
+                if (! is_array($v)){
                     $this->where .= "`{$k}` = :{$k}";
                     $this->params[$k] = $v;
                     continue;

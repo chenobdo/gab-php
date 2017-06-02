@@ -41,7 +41,7 @@ class DB
      * @var array
      */
     private $dbStrategyMap  = [
-        'mysql' => 'Framework\Orm\Db\Mysql'
+        'mysqldb' => 'Framework\Orm\Db\Mysql'
     ];
 
     /**
@@ -50,6 +50,15 @@ class DB
      * @var object
      */
     private $dbInstance;
+
+    /**
+     * 自增id
+     *
+     * 插入数据成功后的自增id, 0为插入失败
+     *
+     * @var string
+     */
+    private $id = '';
 
     public function table($tableName = '')
     {
@@ -93,6 +102,45 @@ class DB
     	$this->bindSql();
     	$functionName = __FUNCTION__;
  		return $this->dbInstance->$functionName($this);
+    }
+
+    /**
+     * 查找所有数据
+     *
+     * @return void
+     */
+    public function save($data)
+    {
+        $this->insert($data);
+        $functionName = __FUNCTION__;
+        return $this->dbInstance->$functionName($this);
+    }
+
+    /**
+     * 查找所有数据
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $this->del();
+        $this->buildSql();
+        $functionName = __FUNCTION__;
+        return $this->dbInstance->$functionName($this);
+    }
+
+    /**
+     * 查找所有数据
+     *
+     * @param  array $data 数据
+     * @return void
+     */
+    public function update($data = [])
+    {
+        $this->updateData($data);
+        $this->buildSql();
+        $functionName = __FUNCTION__;
+        return $this->dbInstance->$functionName($this);
     }
 
     public function buildSql()

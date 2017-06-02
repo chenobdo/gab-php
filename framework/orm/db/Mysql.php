@@ -21,11 +21,46 @@ use PDO;
  */
 class Mysql
 {
-	private $dbhost   = '';
+    /**
+     * db host
+     *
+     * @var string
+     */
+    private $dbhost   = '';
+
+    /**
+     * db name
+     *
+     * @var string
+     */
     private $dbname   = '';
+
+    /**
+     * db connect info
+     *
+     * @var string
+     */
     private $dns      = '';
+
+    /**
+     * db username
+     *
+     * @var string
+     */
     private $username = '';
+
+    /**
+     * db password
+     *
+     * @var string
+     */
     private $password = '';
+
+    /**
+     * pdo instance
+     *
+     * @var string
+     */
     private $pdo = '';
 
     /**
@@ -83,6 +118,11 @@ class Mysql
         $this->$name = $value;
     }
 
+    /**
+     * select one data
+     * @param  DB     $db DB instance
+     * @return array
+     */
     public function findOne(DB $db)
     {
     	$this->pdoStatement = $this->pdo->prepare($b->sql);
@@ -91,6 +131,52 @@ class Mysql
     	return $this->pdoStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * save data
+     *
+     * @param  DB     $db DB instance
+     * @return string
+     */
+    public function save(DB $db)
+    {
+        $this->pdoStatement = $this->pdo->prepare($db->sql);
+        $this->bindValue($db);
+        $res = $this->pdoStatement->execute();
+        return $db->id  = $this->pdo->lastInsertId();
+    }
+
+    /**
+     * delete data
+     *
+     * @param  DB     $db DB instance
+     * @return boolean
+     */
+    public function delete(DB $db)
+    {
+        $this->pdoStatement = $this->pdo->prepare($db->sql);
+        $this->bindValue($db);
+        return $this->pdoStatement->execute();
+    }
+
+    /**
+     * update data
+     *
+     * @param  DB     $db DB instance
+     * @return boolean
+     */
+    public function update(DB $db)
+    {
+        $this->pdoStatement = $this->pdo->prepare($db->sql);
+        $this->bindValue($db);
+        return $this->pdoStatement->execute();
+    }
+
+    /**
+     * bind value
+     *
+     * @param  DB     $db DB instance
+     * @return void
+     */
     public function bindValue(DB $db)
     {
     	if (empty($db->params)) {
