@@ -224,7 +224,8 @@ class Request
      */
     public function all()
     {
-        return $this->requestParams;
+        $res = array_merge($this->postParams, $this->getParams);
+        return $res;
     }
 
     /**
