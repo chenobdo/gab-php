@@ -33,8 +33,9 @@ class UserDefinedHandle implements Handle
         $config  = $app::$container->getSingle('config');
         foreach ($config->config['module'] as $v) {
             $v = ucwords($v);
-            $className = "\App\\{$v}\\Logics\UserDefinedCase";
-            new $className($app);
+            // TODO
+            // $className = "\App\\{$v}\\Logics\UserDefinedCase";
+            // new $className($app);
         }
 	}
 }
