@@ -12,10 +12,10 @@
 return [
     /* 默认配置 */
     'database' => [
-        'dbtype'   => 'mysql',
-        'dbname'   => 'test',
-        'host'     => 'localhost',
+        'dbtype'   => 'mysqldb',
+        'dbname'   => 'Gab',
+        'dbhost'     => 'localhost',
         'username' => 'root',
-        'password' => '214'
+        'password' => '90105cxy'
     ]
 ];

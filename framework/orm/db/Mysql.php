@@ -21,11 +21,46 @@ use PDO;
  */
 class Mysql
 {
-	private $dbhost   = '';
+    /**
+     * db host
+     *
+     * @var string
+     */
+    private $dbhost   = '';
+
+    /**
+     * db name
+     *
+     * @var string
+     */
     private $dbname   = '';
+
+    /**
+     * db connect info
+     *
+     * @var string
+     */
     private $dns      = '';
+
+    /**
+     * db username
+     *
+     * @var string
+     */
     private $username = '';
+
+    /**
+     * db password
+     *
+     * @var string
+     */
     private $password = '';
+
+    /**
+     * pdo instance
+     *
+     * @var string
+     */
     private $pdo = '';
 
     /**
@@ -83,14 +118,81 @@ class Mysql
         $this->$name = $value;
     }
 
+    /**
+     * select one data
+     * @param  DB     $db DB instance
+     * @return array
+     */
     public function findOne(DB $db)
     {
-    	$this->pdoStatement = $this->pdo->prepare($b->sql);
+    	$this->pdoStatement = $this->pdo->prepare($db->sql);
     	$this->bindValue($db);
     	$this->pdoStatement->execute();
     	return $this->pdoStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * save data
+     *
+     * @param  DB     $db DB instance
+     * @return string
+     */
+    public function save(DB $db)
+    {
+        $this->pdoStatement = $this->pdo->prepare($db->sql);
+        $this->bindValue($db);
+        $this->pdoStatement->execute();
+        return $db->id  = $this->pdo->lastInsertId();
+    }
+
+    /**
+     * delete data
+     *
+     * @param  DB     $db DB instance
+     * @return boolean
+     */
+    public function delete(DB $db)
+    {
+        $this->pdoStatement = $this->pdo->prepare($db->sql);
+        $this->bindValue($db);
+        $this->pdoStatement->execute();
+        return $this->pdoStatement->rowCount();
+    }
+
+    /**
+     * update data
+     *
+     * @param  DB     $db DB instance
+     * @return boolean
+     */
+    public function update(DB $db)
+    {
+        $this->pdoStatement = $this->pdo->prepare($db->sql);
+        $this->bindValue($db);
+        return $this->pdoStatement->execute();
+    }
+
+    /**
+     * query
+     *
+     * @param  DB     $db DB instance
+     * @return boolean
+     */
+    public function query(DB $db)
+    {
+        $res = [];
+        foreach ($this->pdo->query($db->sql, PDO::FETCH_ASSOC) as $v) {
+            $res[] = $v;
+        }
+        return $res;
+    }
+
+    /**
+     * bind value
+     *
+     * @param  DB     $db DB instance
+     * @return void
+     */
     public function bindValue(DB $db)
     {
     	if (empty($db->params)) {

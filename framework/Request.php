@@ -41,6 +41,13 @@ class Request
     private $serverParams = [];
 
     /**
+    * 请求参数
+    *
+    * @var array
+    */
+    private $envParams = [];
+
+    /**
      * 请求所有参数
      * @var array
      */
@@ -96,6 +103,15 @@ class Request
      * @var int
      */
     private $consumeTime = 0;
+
+    /**
+     * 请求身份id
+     *
+     * 每个请求都赋予唯一的身份识别id，便于追踪问题
+     *
+     * @var string
+     */
+    private $requestId = '';
 
 	/**
 	 * 构造
@@ -219,5 +235,19 @@ class Request
     public function server($value = '')
     {
         return isset($this->serverParams[$value]) ? $this->serverParams[$value] : '';
+    }
+
+    /**
+     * 获取env参数
+     *
+     * @param  string $value 参数名
+     * @return mixed
+     */
+    public function env($value = '')
+    {
+        if (isset($this->envParams[$value])) {
+            return $this->envParams[$value];
+        }
+        return '';
     }
 }

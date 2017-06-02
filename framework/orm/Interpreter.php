@@ -18,12 +18,67 @@ use Framework\Exceptions\CoreHttpException;
  */
 trait Interpreter
 {
-    public  $params    = '';
+     /**
+     * 表名称
+     *
+     * table name
+     *
+     * @var string
+     */
     private $tableName = '';
+
+    /**
+     * 查询条件
+     *
+     * query where condition
+     *
+     * @var string
+     */
     private $where     = '';
+
+    /**
+     * 查询参数
+     *
+     * query params
+     *
+     * @var string
+     */
+    public  $params    = '';
+
+     /**
+     * 排序条件
+     *
+     * sort condition
+     *
+     * @var string
+     */
     private $orderBy   = '';
+
+    /**
+     * 查询限制
+     *
+     * query quantity limit
+     *
+     * @var string
+     */
     private $limit     = '';
+
+    /**
+     * 查询偏移量
+     *
+     * query offset
+     *
+     * @var string
+     */
     private $offset    = '';
+
+    /**
+     * 表名称
+     *
+     * table name
+     *
+     * @var string
+     */
     private $sql       = '';
 
     /**
@@ -36,17 +91,24 @@ trait Interpreter
     	if (empty($data)) {
     		throw new CoreHttpException("argument data is null", 400);
     	}
-    	$count = count($data);
-    	// 拼接字段
-		$field = array_keys($data);
-		$fieldString = '';
-		foreach ($field as $k => $v) {
-			if ($k === intval($count - 1)) {
-				$fieldString .= "`{$v}`";
-				continue;
-			}
-			$fieldString .= "`{$v}`".",";
-		}
+
+        $fieldString = '';
+        $valueString = '';
+        $i = 0;
+        foreach ($data as $k => $v) {
+            if ($i === 0) {
+                $fieldString .= "`{$k}`";
+                $valueString .= ":{$v}";
+                $this->params[$k] = $v;
+                ++$i;
+                continue;
+            } else {
+                $fieldString .= "`{$k}`".',';
+                $valueString .= ":{$k}";
+                $this->params[$k] = $v;
+                ++$i;
+            }
+        }
 		unset($k);
     	unset($v);
 
@@ -64,67 +126,38 @@ trait Interpreter
 		unset($k);
     	unset($v);
 
-    	$sql = "INSERT INTO `{$this->tableName}` ({$fieldString}) VALUES ({$valueString})";
-    	echo $sql . "\n";
-    }
-
-    public function delete($data = [])
-    {
-    	if (empty($data)) {
-    		throw new CoreHttpException("argument data is null", 400);
-    	}
-
-    	//拼接where语句
-    	$count = count($data);
-    	$where = '';
-    	$dataCopy = $data;
-    	$pop = array_pop($dataCopy);
-    	if ($count === 1) {
-			$field = array_keys($data)[0];
-			$value = array_values($data)[0];
-			$where = "`{$field}` = '{$value}'";
-    	} else {
-    		foreach ($data as $k => $v) {
-    			if ($v === $pop) {
-    				$where .= "`{$k}` = '{$v}'";
-    				continue;
-    			}
-    			$where .= "`{$k}` = '{$v}' AND ";
-    		}
-    	}
-
-    	$sql = "DELETE FROM `{$this->tableName}` WHERE {$where}";
-    	echo $sql . "\n";
+        $this->sql = "INSERT INTO `{$this->tableName}` ({$fieldString}) VALUES ({$valueString})";
     }
 
     /**
-    *  更新一条数据
+    *  删除数据
     *
-    * @param  array $data 数据
-    * @return mixed
+    * @return void
     */
-    public function update($data=[])
+    public function del($data=[])
+    {
+        $this->sql = "DELETE FROM `{$this->tableName}`";
+    }
+
+    public function updateData($data = [])
     {
         if (empty($data)) {
             throw new CoreHttpException("argument data is null", 400);
-        }
-        if (empty($data['id'])) {
-            throw new CoreHttpException("argument data['id'] is null", 400);
         }
         $set = '';
         $dataCopy = $data;
         $pop = array_pop($dataCopy);
         foreach ($data as $k => $v) {
             if ($v === $pop) {
-                $set .= "`{$k}` = '$v'";
+                $set .= "`{$k}` = :$k";
+                $this->params[$k] = $v;
                 continue;
             }
-            $set .= "`{$k}` = '$v',";
+            $set .= "`{$k}` = :$k,";
+            $this->params[$k] = $v;
         }
 
-        $sql = "UPDATE `{$this->tableName}` SET {$set}";
-
-        echo $sql . "\n";
+        $this->sql = "UPDATE `{$this->tableName}` SET {$set}";
     }
 
     /**
@@ -134,7 +167,31 @@ trait Interpreter
      */
     public function select($data = [])
     {
-        $this->sql = "SELECT * FROM `{$this->tableName}`";
+        $field = '';
+        $count = count($data);
+        switch ($count) {
+            case 0:
+                $field = '*';
+                break;
+            case 1:
+                if(! isset($data[0])) {
+                    throw new CoreHttpException(
+                        "data format invalid",
+                        400
+                    );
+                }
+                $field = "`{$data[0]}`";
+                break;
+
+            default:
+                $last = array_pop($data);
+                foreach ($data as $v) {
+                    $field .= "{$v},";
+                }
+                $field .= $last;
+                break;
+        }
+        $this->sql = "SELECT $field FROM `{$this->tableName}`";
     }
 
     public function where($data = [])
@@ -149,22 +206,22 @@ trait Interpreter
         if ($count === 1) {
             $field = array_keys($data)[0];
             $value = array_values($data)[0];
-            if (!is_array($value)) {
-                $this->where = " WHERE `{$field}` = :{$field}";
+            if (! is_array($value)){
+                $this->where  = " WHERE `{$field}` = :{$field}";
                 $this->params = $data;
                 return $this;
             }
-            $this->where = "WHERE `{$field}` {$value[0]} :{$field}";
+            $this->where = " WHERE `{$field}` {$value[0]} :{$field}";
             $this->params[$field] = $value[1];
             return $this;
         }
 
         // 多条件
-        $tmp = $data;
+        $tmp  = $data;
         $last = array_pop($tmp);
         foreach ($data as $k => $v) {
             if ($v === $last) {
-                if (!is_array($v)) {
+                if (! is_array($v)){
                     $this->where .= "`{$k}` = :{$k}";
                     $this->params[$k] = $v;
                     continue;
@@ -185,12 +242,21 @@ trait Interpreter
         return $this;
     }
 
-    public function orderBy($data = '')
+    /**
+     * orderBy
+     *
+     * @param  string $data sort param, such as id desc
+     * @return object
+     */
+    public function orderBy($sort = '')
     {
-        if (!is_string($data)) {
-            throw new  CoreHttpException(400);
+        if (! is_string($sort)) {
+            throw new CoreHttpException(
+                'argu is not string',
+                400
+            );
         }
-        $this->orderBy = " order by {$data}";
+        $this->orderBy = " order by {$sort}";
         return $this;
     }
 
@@ -205,5 +271,71 @@ trait Interpreter
         }
         $this->limit = " limit {$start},{$len}";
         return $this;
+    }
+
+    /**
+     * count column
+     *
+     * @param  string $data 查询的字段
+     * @return mixed
+     */
+    public function countColumn($data = '')
+    {
+        $data      = empty($data)? '*': $data;
+        $field     = $this->packColumn('count',$data);
+
+        $this->sql = "SELECT $field FROM `{$this->tableName}`";
+    }
+
+    /**
+     * sum column
+     *
+     * @param  string $data 查询的字段
+     * @return mixed
+     */
+    public function sumColumn($data = '')
+    {
+        $data      = empty($data)? '*': $data;
+        $field     = $this->packColumn('sum',$data);
+
+        $this->sql = "SELECT $field FROM `{$this->tableName}`";
+    }
+
+     /**
+     * 组装mysql函数字段
+     *
+     * @param  string $functionName mysql函数名称
+     * @param  string $data         参数
+     * @return string
+     */
+    public function packColumn($functionName = '', $data = '')
+    {
+        $field     = "{$functionName}(`{$data}`)";
+        preg_match_all('/(\w+)\sas/', $data, $matchColumn);
+        if (isset($matchColumn[1][0]) || (! empty($matchColumn[1][0]))) {
+            $matchColumn = $matchColumn[1][0];
+            $field = "{$functionName}(`{$matchColumn}`)";
+            preg_match_all('/as\s(\w+)/', $data, $match);
+            if (isset($match[1][0]) || (! empty($match[1][0]))) {
+                $match = $match[1][0];
+                $field .= " as `{$match}`";
+            }
+        }
+
+        return $field;
+    }
+
+    /**
+     * query
+     *
+     * @param  string $sql sql statement
+     * @return mixed
+     */
+    public function querySql($sql = '')
+    {
+        if (empty($sql)) {
+            throw new CoreHttpException("sql is empty", 400);
+        }
+        $this->sql = $sql;
     }
 }
