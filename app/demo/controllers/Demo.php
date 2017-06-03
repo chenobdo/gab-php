@@ -42,10 +42,4 @@ class Demo
         $data = array_fill(0, 20, $data);
         return $data;
     }
-
-    public function modelExample()
-    {
-        $testTableModel = new TestTable();
-        return $testTableModel->modelFindDemo();
-    }
 }
