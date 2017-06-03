@@ -132,6 +132,19 @@ class Mysql
     }
 
     /**
+     * select one data
+     * @param  DB     $db DB instance
+     * @return array
+     */
+    public function findAll(DB $db)
+    {
+        $this->pdoStatement = $this->pdo->prepare($db->sql);
+        $this->bindValue($db);
+        $this->pdoStatement->execute();
+        return $this->pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * save data
      *
      * @param  DB     $db DB instance
