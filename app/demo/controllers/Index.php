@@ -13,7 +13,9 @@ namespace App\Demo\Controllers;
 
 use Framework\App;
 use Framework\Orm\DB;
+use Framework\Helper;
 use App\Demo\Models\TestTable;
+
 /**
  * Index Controller
  *
