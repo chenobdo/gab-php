@@ -12,7 +12,7 @@
 namespace App\Demo\Controllers;
 
 use Framework\App;
-use Framework\Orm\Db;
+use Framework\Orm\DB;
 
 /**
  * Index Controller
@@ -42,7 +42,7 @@ class Index
     {
         $request = App::$container->getSingle('request');
         return [
-            'username' => $request->get('username', 'default value');
+            'username' => $request->get('username', 'default value')
         ];
     }
 
@@ -71,10 +71,10 @@ class Index
         App::$container->getSingle('config');
         // redis对象
         App::$container->getSingle('redis');
-        // memcache对象
-        App::$container->getSingle('memcache');
-        // mongodb对象
-        App::$container->getSingle('mongodb');
+//        // memcache对象
+//        App::$container->getSingle('memcache');
+//        // mongodb对象
+//        App::$container->getSingle('mongodb');
     }
 
     public function dbFindDemo()
@@ -115,8 +115,8 @@ class Index
         $res      = $instance->save($data);
         $sql      = $instance->sql;
 
-        // return $sql;
-        return $res;
+        return $sql;
+        //return $res;
     }
 
     public function dbDeleteDemo()
@@ -127,29 +127,6 @@ class Index
         $instance = DB::table('user');
         $res      = $instance->where($where)
                              ->delete();
-        $sql      = $instance->sql;
-
-        // return $sql;
-        return $res;
-    }
-
-    /**
-     * sql 操作示例
-     *
-     * findAll
-     *
-     * @return void
-     */
-    public function dbFindAllDemo()
-    {
-        $where = [
-            'id'   => ['>=', 2],
-        ];
-        $instance = DB::table('user');
-        $res      = $instance->where($where)
-                             ->orderBy('id asc')
-                             ->limit(5)
-                             ->findAll(['id','created_at']);
         $sql      = $instance->sql;
 
         // return $sql;

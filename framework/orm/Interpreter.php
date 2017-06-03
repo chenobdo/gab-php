@@ -103,6 +103,7 @@ trait Interpreter
 		unset($k);
     	unset($v);
 
+        $count = count($data);
     	//拼接值
     	$value = array_values($data);
     	$value = array_keys($data);

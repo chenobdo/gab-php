@@ -84,5 +84,5 @@ try {
     });
 } catch (CoreHttpException $e) {
     // 捕获异常
-    $e->reponse();
+    $e->reponse($e);
 }
