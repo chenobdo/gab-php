@@ -115,8 +115,8 @@ class Index
         $res      = $instance->save($data);
         $sql      = $instance->sql;
 
-        // return $sql;
-        return $res;
+        return $sql;
+        //return $res;
     }
 
     public function dbDeleteDemo()
