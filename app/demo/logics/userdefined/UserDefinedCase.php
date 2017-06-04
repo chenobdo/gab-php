@@ -9,7 +9,7 @@
  *                                 *
  ***********************************/
 
-namespace App\Demo\Logics\UserDefined;
+namespace App\Demo\Logics;
 
 use Framework\App;
 

@@ -8,3 +8,9 @@
  *  <https://github.com/obdobriel> *
  *                                 *
  ***********************************/
+
+return [
+    'test' => [
+        'demo'
+    ]
+];

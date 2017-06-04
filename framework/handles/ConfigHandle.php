@@ -95,10 +95,19 @@ class ConfigHandle implements Handle
 
     public function loadConfig(App $app)
     {
-    	$config = require($app->rootPath . '/framework/config/common.php');
+        $defaultCommon   = require($app->rootPath . '/config/common.php');
+        $defaultNosql    = require($app->rootPath . '/config/nosql.php');
+        $defaultDatabase = require($app->rootPath . '/config/database.php');
 
-    	$database = require($app->rootPath . '/framework/config/database.php');
+        $this->config = array_merge($defaultCommon, $defaultNosql, $defaultDatabase);
 
-    	$this->config = array_merge($config, $database);
+        /* 加载模块自定义配置 */
+        $module = $app::$container->getSingle('config')->config['module'];
+        foreach ($module as $v) {
+            $file = "{$app->rootPath}/config/{$v}/config.php";
+            if (file_exists($file)) {
+                $this->config = array_merge($this->config, require($file));
+            }
+        }
     }
 }

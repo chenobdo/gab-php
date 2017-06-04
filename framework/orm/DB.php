@@ -31,7 +31,16 @@ class DB
      *
      * @var string
      */
-    private $dbtype  = '';
+    protected $dbtype  = '';
+
+    /**
+     * 表名称
+     *
+     * table name
+     *
+     * @var string
+     */
+    protected $tableName = '';
 
     /**
      * 数据库策略映射
@@ -40,7 +49,7 @@ class DB
      *
      * @var array
      */
-    private $dbStrategyMap  = [
+    protected $dbStrategyMap  = [
         'mysqldb' => 'Framework\Orm\Db\Mysql'
     ];
 
@@ -49,7 +58,7 @@ class DB
      *
      * @var object
      */
-    private $dbInstance;
+    protected $dbInstance;
 
     /**
      * 自增id
@@ -58,16 +67,28 @@ class DB
      *
      * @var string
      */
-    private $id = '';
+    protected $id = '';
 
-    public function table($tableName = '')
+     /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+        $this->init();
+    }
+
+    static public function table($tableName = '')
     {
     	$db = new self;
-    	$DB = App::$container->setSingle('DB', $db);
-    	$DB->tableName = $tableName;
-    	$DB->init();
+        $db->tableName = $tableName;
+        $prefix = App::$container->getSingle('config')
+                                 ->config['database']['dbprefix'];
+        if (! empty($prefix)) {
+            $db->tableName = $prefix . '_' . $db->tableName;
+        }
+        $db->init();
 
-    	return $DB;
+        return $db;
     }
 
     public function init()
@@ -96,7 +117,7 @@ class DB
     public function findOne($data = [])
     {
     	$this->select($data);
-    	$this->bindSql();
+    	$this->buildSql();
     	$functionName = __FUNCTION__;
  		return $this->dbInstance->$functionName($this);
     }
@@ -109,7 +130,7 @@ class DB
     public function findAll($data = [])
     {
     	$this->select($data);
-    	$this->bindSql();
+    	$this->buildSql();
     	$functionName = __FUNCTION__;
  		return $this->dbInstance->$functionName($this);
     }
@@ -227,10 +248,5 @@ class DB
     public function __set($name = '', $value = '')
     {
         $this->$name = $value;
-    }
-
-    public function __construct()
-    {
-
     }
 }

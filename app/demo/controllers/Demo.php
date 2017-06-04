@@ -11,11 +11,10 @@
 
 namespace App\Demo\Controllers;
 
-use Framework\App;
-use Framework\Orm\Db\Mysql;
+use App\Demo\Models\TestTable;
 
 /**
- * Index Controller
+ * Demo Controller
  *
  * @desc default controller
  *

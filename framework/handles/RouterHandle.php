@@ -189,13 +189,13 @@ class RouterHandle implements Handle
         // App
         $this->app = $app;
         // 获取配置
-        $config = $app::$container->getSingle('config');
+        $this->config = $app::$container->getSingle('config');
         // 设置默认模块
-        $this->moduleName     = $config->config['route']['default_module'];
+        $this->moduleName     = $this->config->config['route']['default_module'];
         // 设置默认控制器
-        $this->controllerName = $config->config['route']['default_controller'];
+        $this->controllerName = $this->config->config['route']['default_controller'];
         // 设置默认操作
-        $this->actionName     = $config->config['route']['default_action'];
+        $this->actionName     = $this->config->config['route']['default_action'];
 
         /* 路由策略　*/
         $this->routeStrategy = 'pathinfo';
@@ -335,8 +335,8 @@ class RouterHandle implements Handle
      */
     private function userDefined()
     {
-        $module = $this->config['module'];
-        foreach ($module as $V) {
+        $module = $this->config->config['module'];
+        foreach ($module as $v) {
             // 加载自定义路由配置文件
             $routeFile = "{$this->app->rootPath}/config/{$v}/route.php";
             if (file_exists($routeFile)) {

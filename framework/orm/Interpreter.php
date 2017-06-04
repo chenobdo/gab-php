@@ -18,15 +18,6 @@ use Framework\Exceptions\CoreHttpException;
  */
 trait Interpreter
 {
-     /**
-     * 表名称
-     *
-     * table name
-     *
-     * @var string
-     */
-    private $tableName = '';
-
     /**
      * 查询条件
      *
@@ -112,6 +103,7 @@ trait Interpreter
 		unset($k);
     	unset($v);
 
+        $count = count($data);
     	//拼接值
     	$value = array_values($data);
     	$value = array_keys($data);

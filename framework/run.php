@@ -14,7 +14,7 @@ use Framework\Handles\ExceptionHandle;
 use Framework\Handles\RouterHandle;
 use Framework\Handles\ConfigHandle;
 use Framework\Handles\NosqlHandle;
-use Framework\Handles\UserDefinedHandle
+use Framework\Handles\UserDefinedHandle;
 use Framework\Exceptions\CoreHttpException;
 use Framework\Request;
 use Framework\Response;
@@ -84,5 +84,5 @@ try {
     });
 } catch (CoreHttpException $e) {
     // 捕获异常
-    $e->reponse();
+    $e->reponse($e);
 }
