@@ -31,7 +31,7 @@ class TestTable extends Model
 	*
 	* @return void
 	*/
-    public function modelFindDemo()
+    public function modelFindOneDemo()
     {
         $where = [
             'id'   => ['>=', 2]
@@ -113,15 +113,13 @@ class TestTable extends Model
      *
      * @return void
      */
-    public function modelUpdateDemo()
+    public function modelUpdateDemo($data = [])
     {
         $where = [
             'id'   => ['>=', 2],
         ];
         $res      = $this->where($where)
-                             ->update([
-                                 'nickname' => 'easy'
-                             ]);
+                         ->update($data);
         $sql      = $this->sql;
 
         // return $sql;
@@ -141,7 +139,7 @@ class TestTable extends Model
             'id'   => ['>=', 2],
         ];
         $res      = $this->where($where)
-                             ->count('id as CountId');
+                         ->count('id as CountId');
         $sql      = $this->sql;
 
         // return $sql;
