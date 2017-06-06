@@ -30,7 +30,7 @@ class LogHandle implements Handle
      *
      * @var string
      */
-    private $logFileName = 'easy-php-framework-run';
+    private $logFileName = 'gab-php-framework-run';
 
     /**
      * 延时注册Loger实例到容器
