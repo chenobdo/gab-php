@@ -44,6 +44,7 @@ class DbOperationDemo
                              ->orderBy('id asc')
                              ->findOne();
         $sql      = $instance->sql;
+        $database = $instance->masterSlave;
 
         // return $sql;
         return $res;

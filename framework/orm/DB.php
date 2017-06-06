@@ -69,6 +69,13 @@ class DB
      */
     protected $id = '';
 
+    /**
+    * 当前查询主从
+    *
+    * @var object
+    */
+    private $masterSlave = '';
+
      /**
      * 构造函数
      */

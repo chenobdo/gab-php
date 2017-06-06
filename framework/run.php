@@ -58,11 +58,8 @@ try {
         return new ErrorHandle();
     });
 
-    $app->load(function() {
-        //  加载异常处理机制　由于本文件全局catch了异常　所以不存在未捕获异常
-        //　可省略注册未捕获异常Handle
-        //　Loading exception handle.
-        //  I'm not used it, because this file catch all exception　
+    $app->load(function () {
+        //  加载异常处理机制 Loading exception handle.
         return new ExceptionHandle();
     });
 
