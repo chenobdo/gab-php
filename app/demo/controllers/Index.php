@@ -76,14 +76,14 @@ class Index
         // 配置对象
         App::$container->getSingle('config');
         // 日志对象
-        $loger = App::$container->getSingle('loger');
-        $loger->write(['Gab PHP Loger']);
+        $loger = App::$container->getSingle('logger');
+        $loger->write(['Gab PHP Logger']);
 
         return [];
     }
 
     /**
-     * 容器内获取实例演示
+     * 容器内获取nosql实例演示
      *
      * @return void
      */
