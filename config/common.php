@@ -28,6 +28,8 @@ return [
     ],
 
     /* 响应结果是否使用框架定义的rest风格 */
-    'rest_response' => true
+    'rest_response' => true,
 
+    /* 默认时区 */
+    'default_timezone' => 'Asia/Shanghai'
 ];

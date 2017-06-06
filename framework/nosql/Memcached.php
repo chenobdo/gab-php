@@ -23,12 +23,12 @@ class Memcached
     /**
      * 构造函数
      */
-    public function __construct()
+    static public function init()
     {
         $config = App::$container->getSingle('config');
         $config = $config->config['nosql']['Memcached'];
-        $redis = new rootMemcached();
-        $redis->addServer($config['host'], $config['port']);
-        App::$container->setSingle('memcached', $redis);
+        $memcached  = new rootMemcached();
+        $memcached->addServer($config['host'], $config['port']);
+        return $memcached;
     }
 }

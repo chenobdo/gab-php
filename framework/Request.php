@@ -11,6 +11,8 @@
 
 namespace Framework;
 
+use Framework\Exceptions\CoreHttpException;
+
 /**
 * 请求
 */
@@ -141,21 +143,6 @@ class Request
         $this->loadEnv($app);
 	}
 
-    /**
-     * 加载环境参数
-     *
-     * @param  App    $app 框架实例
-     * @return void
-     */
-    public function loadEnv(App $app)
-    {
-        $env = parse_ini_file($app->rootPath . '/.env', true);
-        if ($env === false) {
-            throw CoreHttpException('load env fail', 500);
-        }
-        $this->envParams = array_merge($_ENV, $env);
-    }
-
 	/**
      * 魔法函数__get
      * @param  string $name 属性名称
@@ -193,7 +180,7 @@ class Request
         if (empty($this->getParams[$value]) && $checkEmpty) {
             return $default;
         }
-        return $this->getParams[$value];
+        return htmlspecialchars($this->getParams[$value]);
     }
 
     /**
@@ -212,7 +199,7 @@ class Request
         if (empty($this->getParams[$value]) && $checkEmpty) {
             return $default;
         }
-        return $this->postParams[$value];
+        return htmlspecialchars($this->postParams[$value]);
     }
 
     /**
@@ -231,7 +218,7 @@ class Request
         if (empty($this->getParams[$value]) && $checkEmpty) {
             return $default;
         }
-        return $this->requestParams[$value];
+        return htmlspecialchars($this->requestParams[$value]);
     }
 
     /**
@@ -242,6 +229,9 @@ class Request
     public function all()
     {
         $res = array_merge($this->postParams, $this->getParams);
+        foreach ($res as &$v) {
+            $v = htmlspecialchars($v);
+        }
         return $res;
     }
 
@@ -267,5 +257,57 @@ class Request
             return $this->envParams[$value];
         }
         return '';
+    }
+
+    /**
+     * 加载环境参数
+     *
+     * @param  App    $app 框架实例
+     * @return void
+     */
+    public function loadEnv(App $app)
+    {
+        $env = parse_ini_file($app->rootPath . '/.env', true);
+        if ($env === false) {
+            throw CoreHttpException('load env fail', 500);
+        }
+        $this->envParams = array_merge($_ENV, $env);
+    }
+
+    /**
+    * 参数验证
+    *
+    * 支持必传参数验证，参数长度验证，参数类型验证
+    *
+    * @param  string $paramName 参数名
+    * @param  string $rule      规则
+    * @return mixed
+    */
+    public function check($paramName = '', $rule = '', $length = 0)
+    {
+        if (! is_int($length)) {
+            throw new CoreHttpException(400, "length type is not int");
+        }
+
+        if ($rule === 'require') {
+            if (! empty($this->request($paramName))) {
+                return;
+            }
+            throw new CoreHttpException(404, "param {$paramName}");
+        }
+
+        if ($rule === 'length') {
+            if (strlen($this->request($paramName)) === $length) {
+                return;
+            }
+            throw new CoreHttpException(400, "param {$paramName} length is not {$length}");
+        }
+
+        if ($rule === 'number') {
+            if (is_numeric($this->request($paramName))) {
+                return;
+            }
+            throw new CoreHttpException(400, "{$paramName} type is not number");
+        }
     }
 }

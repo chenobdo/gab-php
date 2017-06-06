@@ -11,7 +11,6 @@
 
 namespace Framework\Orm\Db;
 
-use Framework\App;
 use Framework\Orm\DB;
 use Framework\Exception\CoreHttpException;
 use PDO;
@@ -72,19 +71,27 @@ class Mysql
      */
     private $pdoStatement = '';
 
-	public function __construct()
+    /**
+     * init mysql driver by pdo
+     * @param string $dbhost   host
+     * @param string $dbname   database name
+     * @param string $username database username
+     * @param string $password password
+     */
+	public function __construct(
+        $dbhost   = '',
+        $dbname   = '',
+        $username = '',
+        $password = '')
 	{
-		$config         = APP::$container->getSingle('config');
-        $config         = $config->config;
-        $dbConfig       = $config['database'];
-        $this->dbhost   = $dbConfig['dbhost'];
-        $this->dbname   = $dbConfig['dbname'];
+        $this->dbhost   = $dbhost;
+        $this->dbname   = $dbname;
         $this->dsn      = "mysql:dbname={$this->dbname};host={$this->dbhost};";
-        $this->username = $dbConfig['username'];
-        $this->password = $dbConfig['password'];
+        $this->username = $username;
+        $this->password = $password;
 
         $this->connect();
-	}
+    }
 
 	private function connect()
 	{

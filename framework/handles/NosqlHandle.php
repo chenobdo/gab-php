@@ -16,17 +16,20 @@ use Framework\Handles\Handld;
 use Framework\Exceptions\CoreHttpException;
 
 /**
- *  nosql处理机制
+ *  nosql handle
  */
 class NosqlHandle implements Handle
 {
+	/**
+	 * [__construct description]
+	 */
 	public function __construct()
 	{
-
 	}
 
 	/**
-	 * 注册配置文件处理机制
+	 * register nosql handle
+	 *
 	 * @param  App    $app 框架实例
 	 * @return void
 	 */
@@ -39,7 +42,10 @@ class NosqlHandle implements Handle
         $config = explode(',', $config->config['nosql']);
         foreach ($config as $k => $v) {
             $className = 'Framework\Nosql\\' . ucfirst($v);
-            new $className();
+            App::$container->setSingle($v, function () use ($className) {
+                // 懒加载　lazy load
+                return $className::init();
+            });
         }
 	}
 }

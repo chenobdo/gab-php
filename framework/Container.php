@@ -13,7 +13,9 @@ namespace Framework;
 
 use Framework\Exceptions\CoreHttpException;
 
-
+/**
+ * Dependency Injection Container
+ */
 class Container
 {
 	/**
@@ -37,17 +39,21 @@ class Container
     public function set($alias = '', $objectName = '')
     {
     	$this->classMap[$alias] = $objectName;
+        if (is_callable($objectName)) {
+            return $objectName();
+        }
+        return new $objectName;
     }
 
     /**
-     * 获取一个类实例
+     * get a instance from a class
      * @param  string $alias 类名或别名
      * @return object
      */
     public function get($alias = '')
     {
     	if (array_key_exists($alias, $this->classMap)) {
-    		if (is_callable($object)) {
+    		if (is_callable($this->classMap[$alias])) {
     			return $this->classMap[$alias]();
     		}
     		return new $this->classMap[$alias];
@@ -76,8 +82,7 @@ class Container
             if (array_key_exists($alias, $this->instanceMap)) {
                 return $this->instanceMap[$alias];
             }
-			$this->instanceMap[$alias] = $object();
-            return $this->instanceMap[$alias];
+			$this->instanceMap[$alias] = $object;
 		}
 		if (is_object($alias)) {
 			$className = get_class($alias);
@@ -103,14 +108,30 @@ class Container
 
     /**
      * 获取一个单例类
-     * @param  string $alias 类名或别名
+     *
+     * get a sington instance
+     *
+     * @param  string  $alias   类名或别名
+     * @param  Closure $closure 闭包
      * @return object
      */
-    public function getSingle($alias)
+    public function getSingle($alias = '', $closure = '')
     {
-    	if (array_key_exists($alias, $this->instanceMap)) {
-    		return $this->instanceMap[$alias];
-    	}
-    	throw new CoreHttpException(404, 'Class:' . $alias);
+        if (array_key_exists($alias, $this->instanceMap)) {
+            $instance = $this->instanceMap[$alias];
+            if (is_callable($instance)) {
+                return $instance();
+            }
+            return $instance;
+        }
+
+        if (is_callable($closure)) {
+            return $this->instanceMap[$alias] = $closure();
+        }
+
+        throw new CoreHttpException(
+            404,
+            'Class:' . $alias
+        );
     }
 }
