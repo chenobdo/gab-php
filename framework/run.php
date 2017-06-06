@@ -43,6 +43,11 @@ try {
      * Load all kinds of handles
      */
 
+    $app->load(function() {
+        // Loading config handle
+        return new ConfigHandle();
+    });
+
     $app->load(function () {
         // Loading log handle
         return new LogHandle();
@@ -59,11 +64,6 @@ try {
         //　Loading exception handle.
         //  I'm not used it, because this file catch all exception　
         return new ExceptionHandle();
-    });
-
-    $app->load(function() {
-        // Loading config handle
-        return new ConfigHandle();
     });
 
     $app->load(function () {

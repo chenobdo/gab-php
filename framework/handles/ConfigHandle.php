@@ -74,6 +74,8 @@ class ConfigHandle implements Handle
 		$this->app = $app;
 		$app::$container->setSingle('config', $this);
 		$this->loadConfig($app);
+        // 加载时区
+        date_default_timezone_set($this->config['default_timezone']);
     }
 
     public function loadConfig(App $app)
