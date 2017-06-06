@@ -81,18 +81,30 @@ class DbOperationDemo
      */
     public function dbSaveDemo()
     {
-        $data = [
-            'nickname' => 'gab-php',
+        $user = DB::table('user');
+        $test = DB::table('test');
+
+        $user->beginTransaction();
+
+        $res      = $user->save([
+            'nickname' => 'gab-php2',
             'name' => 'gab-php',
             'created_at' => time(),
             'updated_at' => time()
-        ];
-        $instance = DB::table('user');
-        $res      = $instance->save($data);
-        $sql      = $instance->sql;
+        ]);
 
-       //return $sql;
-       return $res;
+        $result   = $test->save([
+            'name' => 'easy'
+        ]);
+
+        var_dump($result);
+        if (! $result) {
+            $user->rollBack();
+        } else {
+            $user->commit();
+        }
+
+        return [];
     }
 
     /**

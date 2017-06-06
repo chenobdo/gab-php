@@ -249,4 +249,34 @@ class DB
     {
         $this->$name = $value;
     }
+
+    /**
+     * stop auto commit transaction and start a transaction
+     *
+     * @return void
+     */
+    public function beginTransaction()
+    {
+        $this->dbInstance->beginTransaction();
+    }
+
+    /**
+     * commit a transaction
+     *
+     * @return void
+     */
+    public function commit()
+    {
+        $this->dbInstance->commit();
+    }
+
+    /**
+     * rollback a transaction
+     *
+     * @return void
+     */
+    public function rollBack()
+    {
+        $this->dbInstance->rollBack();
+    }
 }
