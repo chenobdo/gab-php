@@ -14,9 +14,12 @@ namespace Framework\Nosql;
 use Framework\App;
 use MongoDB\Client;
 
+/**
+ * mongodb class
+ */
 class MongoDB
 {
-	public function __construct()
+	static public function init()
 	{
 		$config = App::$container->getSingle('config');
 		$config = $config->config['mongoDB'];
@@ -29,6 +32,6 @@ class MongoDB
             ]
 		);
 		$database = $client->selectDatabase($config['database']);
-		App::$container->setSingle('mongoDB', $database);
+		return $database;
 	}
 }

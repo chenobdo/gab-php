@@ -14,14 +14,20 @@ namespace Framework\Nosql;
 use Framework\App;
 use Redis as rootRedis;
 
+/**
+ * Redis class
+ */
 class Redis
 {
-	public function __construct()
+	/**
+	 * Init redis
+	 */
+	static public function init()
 	{
 		$config = App::$container->getSingle('config');
 		$config = $config->config['redis'];
 		$redis = new rootRedis();
 		$redis->connect($config['host'], $config['port']);
-		App::$container->setSingle('redis', $redis);
+		return $redis;
 	}
 }
