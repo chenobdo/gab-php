@@ -249,4 +249,43 @@ class DB
     {
         $this->$name = $value;
     }
+
+    /**
+     * stop auto commit transaction and start a transaction
+     *
+     * @return void
+     */
+    static public function beginTransaction()
+    {
+        $instance = APP::$container->setSingle('DB', function () {
+            return new DB();
+        });
+        $instance->dbInstance->beginTransaction();
+    }
+
+    /**
+     * commit a transaction
+     *
+     * @return void
+     */
+    static public function commit()
+    {
+        $instance = APP::$container->setSingle('DB', function () {
+            return new DB();
+        });
+        $instance->dbInstance->commit();
+    }
+
+    /**
+     * rollback a transaction
+     *
+     * @return void
+     */
+    static public function rollBack()
+    {
+        $instance = APP::$container->setSingle('DB', function () {
+            return new DB();
+        });
+        $instance->dbInstance->rollBack();
+    }
 }

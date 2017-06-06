@@ -154,7 +154,10 @@ class Mysql
     {
         $this->pdoStatement = $this->pdo->prepare($db->sql);
         $this->bindValue($db);
-        $this->pdoStatement->execute();
+        $res = $this->pdoStatement->execute();
+        if (! $res) {
+            return false;
+        }
         return $db->id  = $this->pdo->lastInsertId();
     }
 
@@ -214,5 +217,35 @@ class Mysql
     	foreach ($db->params as $k => $v) {
     		$this->pdoStatement->bindValue(":{$k}", $v);
     	}
+    }
+
+    /**
+     * stop auto commit transaction and start a transaction
+     *
+     * @return void
+     */
+    public function beginTransaction()
+    {
+        $this->pdo->beginTransaction();
+    }
+
+    /**
+     * commit a transaction
+     *
+     * @return void
+     */
+    public function commit()
+    {
+        $this->pdo->commit();
+    }
+
+    /**
+     * rollback a transaction
+     *
+     * @return void
+     */
+    public function rollBack()
+    {
+        $this->pdo->rollBack();
     }
 }

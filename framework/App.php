@@ -216,6 +216,12 @@ class App
             return;
         }
 
-        $closure()->restSuccess($this->responseData);
+        $useRest = self::$container->getSingle('config')
+                                   ->config['rest_response'];
+
+        if ($useRest) {
+            $closure()->restSuccess($this->responseData);
+        }
+        $closure()->response($this->responseData);
     }
 }

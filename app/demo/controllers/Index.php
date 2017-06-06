@@ -12,9 +12,8 @@
 namespace App\Demo\Controllers;
 
 use Framework\App;
-use Framework\Orm\DB;
 use Framework\Helper;
-use App\Demo\Models\TestTable;
+use Framework\Loger;
 
 /**
  * Index Controller
@@ -65,161 +64,38 @@ class Index
         ]);
     }
 
-    public function nosqlDemo()
+    /**
+     * 容器内获取实例演示
+     *
+     * @return void
+     */
+    public function getInstanceFromContainerDemo()
     {
         // 请求对象
         App::$container->getSingle('request');
         // 配置对象
         App::$container->getSingle('config');
+        // 日志对象
+        $loger = App::$container->getSingle('logger');
+        $loger->write(['Gab PHP Logger']);
+
+        return [];
+    }
+
+    /**
+     * 容器内获取nosql实例演示
+     *
+     * @return void
+     */
+    public function nosqlDemo()
+    {
         // redis对象
         App::$container->getSingle('redis');
-//        // memcache对象
-//        App::$container->getSingle('memcache');
+//        // memcahe对象
+//        App::$container->getSingle('memcached');
 //        // mongodb对象
-//        App::$container->getSingle('mongodb');
-    }
+//        App::$container->getSingle('mongoDB');
 
-    public function dbFindDemo()
-    {
-        $where = [
-            'id' => ['>=', 2]
-        ];
-        $instance = DB::table('user');
-        $res = $instance->where($where)
-                        ->orderBy('id asc')
-                        ->findOne();
-        $sql = $instance->sql;
-        return $res;
-    }
-
-    public function dbFindAllDemo()
-    {
-        $where = [
-            'id'   => ['>=', 2]
-        ];
-        $instance = DB::table('user');
-        $res      = $instance->where($where)
-                             ->orderBy('id asc')
-                             ->limit(5)
-                             ->findAll();
-        $sql      = $instance->sql;
-
-        // return $sql;
-        return $res;
-    }
-
-    public function dbSaveDemo()
-    {
-        $data = [
-            'nickname' => 'gab-php'
-        ];
-        $instance = DB::table('user');
-        $res      = $instance->save($data);
-        $sql      = $instance->sql;
-
-        return $sql;
-        //return $res;
-    }
-
-    public function dbDeleteDemo()
-    {
-        $where = [
-            'id'   => ['>=', 2],
-        ];
-        $instance = DB::table('user');
-        $res      = $instance->where($where)
-                             ->delete();
-        $sql      = $instance->sql;
-
-        // return $sql;
-        return $res;
-    }
-
-    /**
-     * sql 操作示例
-     *
-     * Update
-     *
-     * @return void
-     */
-    public function dbUpdateDemo()
-    {
-        $where = [
-            'id'   => ['>=', 2],
-        ];
-        $instance = DB::table('user');
-        $res      = $instance->where($where)
-                             ->update([
-                                 'nickname' => 'easy'
-                             ]);
-        $sql      = $instance->sql;
-
-        // return $sql;
-        return $res;
-    }
-
-     /**
-     * sql 操作示例
-     *
-     * Count
-     *
-     * @return void
-     */
-    public function dbCountDemo()
-    {
-        $where = [
-            'id'   => ['>=', 2],
-        ];
-        $instance = DB::table('user');
-        $res      = $instance->where($where)
-                             ->count('id asc');
-        $sql      = $instance->sql;
-
-        // return $sql;
-        return $res;
-    }
-
-    /**
-     * sql 操作示例
-     *
-     * Sum
-     *
-     * @return void
-     */
-    public function dbSumDemo()
-    {
-        $where = [
-            'id'   => ['>=', 1],
-        ];
-        $instance = DB::table('user');
-        $res      = $instance->where($where)
-                             ->sum('id as SumId');
-        $sql      = $instance->sql;
-
-        return $sql;
-        return $res;
-    }
-
-    /**
-     * sql 操作示例
-     *
-     * query
-     *
-     * @return void
-     */
-    public function dbQueryDemo()
-    {
-        $instance = DB::table('user');
-        $res      = $instance->query('SELECT `id` as `SumId` FROM `user` WHERE `id` >= 1');
-        $sql      = $instance->sql;
-
-        // return $sql;
-        return $res;
-    }
-
-    public function modelExample()
-    {
-        $testTableModel = new TestTable();
-        return $testTableModel->modelFindDemo();
+        return [];
     }
 }
