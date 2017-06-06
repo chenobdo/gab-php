@@ -13,7 +13,6 @@ namespace Framework\Handles;
 
 use Framework\App;
 use Framework\Handles\Handle;
-use Framework\Helper;
 use Framework\Exceptions\CoreHttpException;
 
 class LogHandle implements Handle
@@ -57,7 +56,7 @@ class LogHandle implements Handle
          *
          * check log path env config
          */
-        $this->logPath = Helper::env('log_path');
+        $this->logPath = env('log_path');
         if (empty($this->logPath) || ! isset($this->logPath['path'])) {
             throw new CoreHttpException(400, 'log path is not defined');
         }

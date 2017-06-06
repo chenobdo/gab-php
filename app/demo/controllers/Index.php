@@ -12,7 +12,6 @@
 namespace App\Demo\Controllers;
 
 use Framework\App;
-use Framework\Helper;
 use Framework\Loger;
 
 /**
