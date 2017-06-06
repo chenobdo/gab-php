@@ -51,8 +51,8 @@ class Entrance
                        ->setNext($checkRouter);
 
         // 启动网关
-        $checkArguments->start(
-            APP::$container->getSingle('request')
-        );
+//        $checkArguments->start(
+//            APP::$container->getSingle('request')
+//        );
     }
 }
