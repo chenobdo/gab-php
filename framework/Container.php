@@ -13,7 +13,9 @@ namespace Framework;
 
 use Framework\Exceptions\CoreHttpException;
 
-
+/**
+ * Dependency Injection Container
+ */
 class Container
 {
 	/**
@@ -37,17 +39,21 @@ class Container
     public function set($alias = '', $objectName = '')
     {
     	$this->classMap[$alias] = $objectName;
+        if (is_callable($objectName)) {
+            return $objectName();
+        }
+        return new $objectName;
     }
 
     /**
-     * 获取一个类实例
+     * get a instance from a class
      * @param  string $alias 类名或别名
      * @return object
      */
     public function get($alias = '')
     {
     	if (array_key_exists($alias, $this->classMap)) {
-    		if (is_callable($object)) {
+    		if (is_callable($this->classMap[$alias])) {
     			return $this->classMap[$alias]();
     		}
     		return new $this->classMap[$alias];
@@ -102,7 +108,8 @@ class Container
     }
 
     /**
-     * 获取一个单例类
+     * get a sington instance
+     *
      * @param  string $alias 类名或别名
      * @return object
      */
