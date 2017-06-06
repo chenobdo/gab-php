@@ -12,6 +12,7 @@
 namespace Framework\Exceptions;
 
 use Exception;
+use Framework\App;
 
 /**
 * 核心http异常
@@ -60,8 +61,7 @@ class CoreHttpException extends Exception
      */
     public static function reponse($exception)
     {
-        header('Content-Type:Application/json; Charset=utf-8');
-        die(json_encode([
+        $data = [
             '__coreError' => [
                 'code'    => $exception->getCode(),
                 'message' => $exception->getMessage(),
@@ -71,7 +71,14 @@ class CoreHttpException extends Exception
                     'trace' => $exception->getTrace(),
                 ]
             ]
-        ]));
+        ];
+
+        // log
+        App::$container->getSingle('logger')->write($data);
+
+        // response
+        header('Content-Type:Application/json; Charset=utf-8');
+        die(json_encode($data, JSON_UNESCAPED_UNICODE));
     }
 
     /**
