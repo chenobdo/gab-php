@@ -193,7 +193,7 @@ class Request
         if (empty($this->getParams[$value]) && $checkEmpty) {
             return $default;
         }
-        return $this->getParams[$value];
+        return htmlspecialchars($this->getParams[$value]);
     }
 
     /**
@@ -212,7 +212,7 @@ class Request
         if (empty($this->getParams[$value]) && $checkEmpty) {
             return $default;
         }
-        return $this->postParams[$value];
+        return htmlspecialchars($this->postParams[$value]);
     }
 
     /**
@@ -231,7 +231,7 @@ class Request
         if (empty($this->getParams[$value]) && $checkEmpty) {
             return $default;
         }
-        return $this->requestParams[$value];
+        return htmlspecialchars($this->requestParams[$value]);
     }
 
     /**
@@ -242,6 +242,9 @@ class Request
     public function all()
     {
         $res = array_merge($this->postParams, $this->getParams);
+        foreach ($res as &$v) {
+            $v = htmlspecialchars($v);
+        }
         return $res;
     }
 
