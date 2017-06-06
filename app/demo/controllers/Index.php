@@ -13,6 +13,7 @@ namespace App\Demo\Controllers;
 
 use Framework\App;
 use Framework\Helper;
+use Framework\Loger;
 
 /**
  * Index Controller
@@ -74,6 +75,9 @@ class Index
         App::$container->getSingle('request');
         // 配置对象
         App::$container->getSingle('config');
+        // 日志对象
+        $loger = App::$container->getSingle('loger');
+        $loger->write(['Gab PHP Loger']);
 
         return [];
     }

@@ -14,6 +14,7 @@ use Framework\Handles\ExceptionHandle;
 use Framework\Handles\RouterHandle;
 use Framework\Handles\ConfigHandle;
 use Framework\Handles\NosqlHandle;
+use Framework\Handles\LogHandle;
 use Framework\Handles\UserDefinedHandle;
 use Framework\Exceptions\CoreHttpException;
 use Framework\Request;
@@ -22,17 +23,9 @@ use Framework\Response;
 // 引入框架文件
 require(__DIR__ . '/App.php');
 
-
 /**
  * 定义全局常量
  */
-
-// 根目录
-// define('ROOT_PATH', __DIR__ . '/App.php');
-
-// 引入自加载类文件
-// require ROOT_PATH . '/framework/Load.php';
-// require ROOT_PATH . '/framework/App.php';
 
 try {
     /* 初始化应用 */
@@ -56,6 +49,11 @@ try {
     $app->load(function() {
         // 加载预定义配置机制
         return new ConfigHandle();
+    });
+
+    $app->load(function () {
+        // 加载日志处理机制
+        return new LogHandle();
     });
 
     $app->load(function () {
