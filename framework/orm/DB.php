@@ -70,18 +70,37 @@ class DB
     protected $id = '';
 
     /**
+     * 走主库的查寻语句
+     *
+     * @var array
+     */
+    private $master = ['insert', 'update', 'delete'];
+
+    /**
     * 当前查询主从
     *
     * @var object
     */
     private $masterSlave = '';
 
+    /**
+     * 数据库配置
+     *
+     * @var array
+     */
+    private $dbConfig = [
+        'dbhost'   => '',
+        'dbname'   => '',
+        'username' => '',
+        'password' => ''
+    ];
+
      /**
      * 构造函数
      */
     public function __construct()
     {
-        $this->init();
+        // $this->init();
     }
 
     static public function table($tableName = '')
@@ -93,27 +112,105 @@ class DB
         if (! empty($prefix)) {
             $db->tableName = $prefix . '_' . $db->tableName;
         }
-        $db->init();
+        // $db->init();
 
         return $db;
     }
 
-    public function init()
+    /**
+     * 初始化策略
+     *
+     * @param  $masterOrSlave 初始化主库还是从库
+     * @return void
+     */
+    public function init($masterOrSlave = '')
     {
     	$config = App::$container->getSingle('config');
     	$this->dbtype = $config->config['database']['dbtype'];
+        if (! empty($masterOrSlave)) {
+            $this->masterSlave = $masterOrSlave;
+        }
+        $this->isMasterOrSlave();
     	$this->decide();
     }
 
+    /**
+     * 策略决策
+     *
+     * @return void
+     */
     public function decide()
     {
     	$dbStrategyName = $this->dbStrategyMap[$this->dbtype];
-    	$this->dbInstance = APP::$container->setSingle(
-    		$this->dbtype,
-    		function () use ($dbStrategyName) {
-    			return new $dbStrategyName();
-    		}
-		);
+        $dbConfig         = $this->dbConfig;
+        $this->dbInstance = APP::$container->getSingle(
+            "{$this->dbtype}-{$this->masterSlave}",
+            function () use ($dbStrategyName, $dbConfig) {
+                return new $dbStrategyName(
+                    $dbConfig['dbhost'],
+                    $dbConfig['dbname'],
+                    $dbConfig['username'],
+                    $dbConfig['password']
+                );
+            }
+        );
+    }
+
+    /**
+     * 判断走主库还是从库
+     *
+     * @return void
+     */
+    public function isMasterOrSlave()
+    {
+        if (! empty($this->masterSlave)) {
+            $this->initMaster();
+            return;
+        }
+        foreach ($this->master as $v) {
+            $res = stripos($this->sql, $v);
+            if ($res === 0 || $res) {
+                $this->initMaster();
+                return;
+            }
+        }
+        $this->initSlave();
+    }
+
+    /**
+     * 初始化主库
+     */
+    public function initMaster()
+    {
+        $config = APP::$container->getSingle('config');
+        $dbConfig = $config->config['database'];
+        $this->dbConfig['dbhost']   = $dbConfig['dbhost'];
+        $this->dbConfig['dbname']   = $dbConfig['dbname'];
+        $this->dbConfig['username'] = $dbConfig['username'];
+        $this->dbConfig['password'] = $dbConfig['password'];
+
+        $this->masterSlave = 'master';
+    }
+
+    /**
+     * 初始化从库
+     */
+    public function initSlave()
+    {
+        $config = APP::$container->getSingle('config');
+        if (! isset($config->config['database']['slave'])) {
+            $this->initMaster();
+            return;
+        }
+        $slave                      = $config->config['database']['slave'];
+        $randSlave                  = $slave[array_rand($slave)];
+        $dbConfig                   = $config->config["database-slave-{$randSlave}"];
+        $this->dbConfig['dbhost']   = $dbConfig['dbhost'];
+        $this->dbConfig['dbname']   = $dbConfig['dbname'];
+        $this->dbConfig['username'] = $dbConfig['username'];
+        $this->dbConfig['password'] = $dbConfig['password'];
+
+        $this->masterSlave = "slave-{$randSlave}";
     }
 
     /**
@@ -150,6 +247,7 @@ class DB
     public function save($data = [])
     {
         $this->insert($data);
+        $this->init();
         $functionName = __FUNCTION__;
         return $this->dbInstance->$functionName($this);
     }
@@ -216,6 +314,7 @@ class DB
     public function query($sql = '')
     {
         $this->querySql($sql);
+        $this->init();
         return $this->dbInstance->query($this);
     }
 
@@ -232,6 +331,8 @@ class DB
     	if (!empty($this->limit)) {
     		$this->sql .= $this->limit;
     	}
+
+        $this->init();
     }
 
     /**
@@ -264,9 +365,10 @@ class DB
      */
     static public function beginTransaction()
     {
-        $instance = APP::$container->setSingle('DB', function () {
+        $instance = APP::$container->getSingle('DB', function () {
             return new DB();
         });
+        $instance->init('master');
         $instance->dbInstance->beginTransaction();
     }
 
@@ -277,9 +379,10 @@ class DB
      */
     static public function commit()
     {
-        $instance = APP::$container->setSingle('DB', function () {
+        $instance = APP::$container->getSingle('DB', function () {
             return new DB();
         });
+        $instance->init('master');
         $instance->dbInstance->commit();
     }
 
@@ -290,9 +393,10 @@ class DB
      */
     static public function rollBack()
     {
-        $instance = APP::$container->setSingle('DB', function () {
+        $instance = APP::$container->getSingle('DB', function () {
             return new DB();
         });
+        $instance->init('master');
         $instance->dbInstance->rollBack();
     }
 }

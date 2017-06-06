@@ -11,7 +11,6 @@
 
 namespace Framework\Orm\Db;
 
-use Framework\App;
 use Framework\Orm\DB;
 use Framework\Exception\CoreHttpException;
 use PDO;
@@ -72,47 +71,25 @@ class Mysql
      */
     private $pdoStatement = '';
 
-	public function __construct()
-	{}
-
     /**
-     * 初始化主库
+     * init mysql driver by pdo
+     * @param string $dbhost   host
+     * @param string $dbname   database name
+     * @param string $username database username
+     * @param string $password password
      */
-    public function initMaster(DB $db)
-    {
-		$config         = APP::$container->getSingle('config');
-        $config         = $config->config;
-        $dbConfig       = $config['database'];
-        $this->dbhost   = $dbConfig['dbhost'];
-        $this->dbname   = $dbConfig['dbname'];
+	public function __construct(
+        $dbhost   = '',
+        $dbname   = '',
+        $username = '',
+        $password = '')
+	{
+        $this->dbhost   = $dbhost;
+        $this->dbname   = $dbname;
         $this->dsn      = "mysql:dbname={$this->dbname};host={$this->dbhost};";
-        $this->username = $dbConfig['username'];
-        $this->password = $dbConfig['password'];
+        $this->username = $username;
+        $this->password = $password;
 
-        $db->masterSlave = 'master';
-        $this->connect();
-	}
-
-    /**
-     * 初始化从库
-     */
-    public function initSlave(DB $db)
-    {
-        $config         = APP::$container->getSingle('config');
-        if (! isset($config->config['database']['slave'])) {
-            $this->initMaster($db);
-            return;
-        }
-        $slave          = $config->config['database']['slave'];
-        $randSlave      = $slave[array_rand($slave)];
-        $dbConfig       = $config->config["database-slave-{$randSlave}"];
-        $this->dbhost   = $dbConfig['dbhost'];
-        $this->dbname   = $dbConfig['dbname'];
-        $this->dsn      = "mysql:dbname={$this->dbname};host={$this->dbhost};";
-        $this->username = $dbConfig['username'];
-        $this->password = $dbConfig['password'];
-
-        $db->masterSlave = "slave-{$randSlave}";
         $this->connect();
     }
 
@@ -155,7 +132,6 @@ class Mysql
      */
     public function findOne(DB $db)
     {
-        $this->initSlave($db);
     	$this->pdoStatement = $this->pdo->prepare($db->sql);
     	$this->bindValue($db);
     	$this->pdoStatement->execute();
@@ -169,7 +145,6 @@ class Mysql
      */
     public function findAll(DB $db)
     {
-        $this->initSlave($db);
         $this->pdoStatement = $this->pdo->prepare($db->sql);
         $this->bindValue($db);
         $this->pdoStatement->execute();
@@ -184,8 +159,6 @@ class Mysql
      */
     public function save(DB $db)
     {
-        $this->initSlave($db);
-        $this->initSlave($db);
         $this->pdoStatement = $this->pdo->prepare($db->sql);
         $this->bindValue($db);
         $res = $this->pdoStatement->execute();
@@ -203,7 +176,6 @@ class Mysql
      */
     public function delete(DB $db)
     {
-        $this->initSlave($db);
         $this->pdoStatement = $this->pdo->prepare($db->sql);
         $this->bindValue($db);
         $this->pdoStatement->execute();
@@ -218,7 +190,6 @@ class Mysql
      */
     public function update(DB $db)
     {
-        $this->initSlave($db);
         $this->pdoStatement = $this->pdo->prepare($db->sql);
         $this->bindValue($db);
         return $this->pdoStatement->execute();
@@ -232,7 +203,6 @@ class Mysql
      */
     public function query(DB $db)
     {
-        $this->initSlave($db);
         $res = [];
         foreach ($this->pdo->query($db->sql, PDO::FETCH_ASSOC) as $v) {
             $res[] = $v;

@@ -23,7 +23,8 @@
             "composer dump-autoload --optimize"
         ],
         "post-root-project-cmd": [
-            "composer install"
+            "composer install",
+            "cp ./.git-hooks/* ./git/hooks"
         ],
         "pre-status-cmd": [
             "cp .env.example .env",
