@@ -87,10 +87,10 @@ class Index
     {
         // redis对象
         App::$container->getSingle('redis');
-        // memcahe对象
-        App::$container->getSingle('memcached');
-        // mongodb对象
-        App::$container->getSingle('mongoDB');
+//        // memcahe对象
+//        App::$container->getSingle('memcached');
+//        // mongodb对象
+//        App::$container->getSingle('mongoDB');
 
         return [];
     }

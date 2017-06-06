@@ -65,7 +65,7 @@ class DbOperationDemo
         $res      = $instance->where($where)
                              ->orderBy('id asc')
                              ->limit(5)
-                             ->findAll(['id','create_at']);
+                             ->findAll(['id','created_at']);
         $sql      = $instance->sql;
 
         // return $sql;
@@ -82,14 +82,17 @@ class DbOperationDemo
     public function dbSaveDemo()
     {
         $data = [
-            'nickname' => 'easy-php',
+            'nickname' => 'gab-php',
+            'name' => 'gab-php',
+            'created_at' => time(),
+            'updated_at' => time()
         ];
         $instance = DB::table('user');
         $res      = $instance->save($data);
         $sql      = $instance->sql;
 
-        // return $sql;
-        return $res;
+       //return $sql;
+       return $res;
     }
 
     /**
@@ -102,7 +105,7 @@ class DbOperationDemo
     public function dbDeleteDemo()
     {
         $where = [
-            'id'   => ['>=', 2],
+            'id'   => ['=', 4],
         ];
         $instance = DB::table('user');
         $res      = $instance->where($where)
@@ -123,16 +126,16 @@ class DbOperationDemo
     public function dbUpdateDemo()
     {
         $where = [
-            'id'   => ['>=', 2],
+            'id'   => ['<=', 4],
         ];
         $instance = DB::table('user');
         $res      = $instance->where($where)
                              ->update([
-                                 'nickname' => 'easy'
+                                 'nickname' => 'gab'
                              ]);
         $sql      = $instance->sql;
 
-        // return $sql;
+        //return $sql;
         return $res;
     }
 
@@ -174,7 +177,7 @@ class DbOperationDemo
                              ->sum('id as SumId');
         $sql      = $instance->sql;
 
-        return $sql;
+        // return $sql;
         return $res;
     }
 
@@ -188,7 +191,7 @@ class DbOperationDemo
     public function dbQueryDemo()
     {
         $instance = DB::table('user');
-        $res      = $instance->query('SELECT `id` as `SumId` FROM `user` WHERE `id` >= 1');
+        $res      = $instance->query("SELECT `id` as `SumId` FROM `g_user` WHERE `id` >= '1'");
         $sql      = $instance->sql;
 
         // return $sql;

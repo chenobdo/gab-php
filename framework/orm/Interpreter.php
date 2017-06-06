@@ -89,34 +89,35 @@ trait Interpreter
         foreach ($data as $k => $v) {
             if ($i === 0) {
                 $fieldString .= "`{$k}`";
-                $valueString .= ":{$v}";
+                $valueString .= "'{$v}'";
                 $this->params[$k] = $v;
                 ++$i;
                 continue;
             } else {
-                $fieldString .= "`{$k}`".',';
-                $valueString .= ":{$k}";
+                $fieldString .= ','."`{$k}`";
+                $valueString .= ','."'{$v}'";
                 $this->params[$k] = $v;
                 ++$i;
             }
         }
-		unset($k);
-    	unset($v);
 
-        $count = count($data);
-    	//拼接值
-    	$value = array_values($data);
-    	$value = array_keys($data);
-		$valueString = '';
-		foreach ($value as $k => $v) {
-			if ($k === intval($count - 1)) {
-				$valueString .= "`{$v}`";
-				continue;
-			}
-			$valueString .= "`{$v}`".",";
-		}
-		unset($k);
-    	unset($v);
+//      unset($k);
+//    	unset($v);
+//
+//        $count = count($data);
+//    	//拼接值
+//    	$value = array_values($data);
+//  	$value = array_keys($data);
+//		$valueString = '';
+//		foreach ($value as $k => $v) {
+//			if ($k === intval($count - 1)) {
+//				$valueString .= "`{$v}`";
+//				continue;
+//			}
+//			$valueString .= "`{$v}`".",";
+//		}
+//		unset($k);
+//    	unset($v);
 
         $this->sql = "INSERT INTO `{$this->tableName}` ({$fieldString}) VALUES ({$valueString})";
     }
@@ -141,11 +142,11 @@ trait Interpreter
         $pop = array_pop($dataCopy);
         foreach ($data as $k => $v) {
             if ($v === $pop) {
-                $set .= "`{$k}` = :$k";
+                $set .= "`{$k}` = '$v'";
                 $this->params[$k] = $v;
                 continue;
             }
-            $set .= "`{$k}` = :$k,";
+            $set .= "`{$k}` = '$v',";
             $this->params[$k] = $v;
         }
 
@@ -199,11 +200,11 @@ trait Interpreter
             $field = array_keys($data)[0];
             $value = array_values($data)[0];
             if (! is_array($value)){
-                $this->where  = " WHERE `{$field}` = :{$field}";
+                $this->where  = " WHERE `{$field}` = '{$value}'";
                 $this->params = $data;
                 return $this;
             }
-            $this->where = " WHERE `{$field}` {$value[0]} :{$field}";
+            $this->where = " WHERE `{$field}` {$value[0]} '{$value[1]}'";
             $this->params[$field] = $value[1];
             return $this;
         }

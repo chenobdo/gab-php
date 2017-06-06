@@ -14,6 +14,7 @@ namespace Framework\Handles;
 use Framework\App;
 use Framework\Handles\Handle;
 use Framework\Exceptions\CoreHttpException;
+use Exception;
 
 /**
  * 未捕获异常注册加载handle
@@ -39,6 +40,6 @@ class ExceptionHandle implements Handle
             'trace'   => $exception->getTrace(),
         ];
 
-        throw new Exception(json_encode($errorInfo), 500);
+        throw new Exception(json_encode($exceptionInfo), 500);
     }
 }
